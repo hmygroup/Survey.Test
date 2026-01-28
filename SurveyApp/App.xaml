@@ -1,13 +1,13 @@
 <Application x:Class="SurveyApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:converters="clr-namespace:SurveyApp.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources />
-                <ui:XamlControlsResources />
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
             
             <!-- Converters -->
@@ -16,6 +16,12 @@
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
             <converters:AddOneConverter x:Key="AddOneConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            
+            <!-- Custom WPF UI Styles -->
+            <Style TargetType="ui:CardControl" BasedOn="{StaticResource {x:Type ui:CardControl}}">
+                <Setter Property="Margin" Value="8"/>
+                <Setter Property="Padding" Value="16"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

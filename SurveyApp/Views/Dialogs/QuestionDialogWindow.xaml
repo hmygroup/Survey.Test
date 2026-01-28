@@ -3,12 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:vm="clr-namespace:SurveyApp.ViewModels"
         xmlns:controls="clr-namespace:SurveyApp.Views.Controls"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:QuestionDialogViewModel}"
-        ui:WindowHelper.UseModernWindowStyle="True"
         Title="{Binding Title}"
         Height="750"
         Width="900"
@@ -44,14 +43,12 @@
                 <TextBlock Text="Question Text *" 
                           FontWeight="SemiBold"
                           Margin="0,0,0,8" />
-                <TextBox Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        AcceptsReturn="True"
-                        TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"
-                        Height="120"
-                        Margin="0,0,0,16"
-                        ui:ControlHelper.PlaceholderText="Enter your question here..."
-                        MaxLength="500" />
+                 <ui:TextBox Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         Height="120"
+                         Margin="0,0,0,16" MaxLength="500" />
 
                 <!-- Question Type Field -->
                 <TextBlock Text="Question Type *" 
@@ -60,8 +57,7 @@
                 <ComboBox ItemsSource="{Binding QuestionTypes}"
                          SelectedItem="{Binding SelectedQuestionType, Mode=TwoWay}"
                          Margin="0,0,0,16"
-                         Height="32"
-                         ui:ControlHelper.PlaceholderText="Select question type..." />
+                         Height="32" />
 
                 <!-- Type Description -->
                 <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"

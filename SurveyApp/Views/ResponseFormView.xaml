@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:vm="clr-namespace:SurveyApp.ViewModels"
       xmlns:selectors="clr-namespace:SurveyApp.Views.Selectors"
       mc:Ignorable="d"
@@ -18,13 +18,13 @@
             <!-- Text Template (Default) -->
             <selectors:QuestionInputSelector.TextTemplate>
                 <DataTemplate>
-                    <TextBox x:Name="ResponseTextBox"
+                    <ui:TextBox x:Name="ResponseTextBox"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              VerticalScrollBarVisibility="Auto"
                              MinHeight="100"
                              MaxHeight="300"
-                             ui:ControlHelper.PlaceholderText="Enter your response here..."
+                             PlaceholderText="Enter your response here..."
                              Tag="{Binding}" />
                 </DataTemplate>
             </selectors:QuestionInputSelector.TextTemplate>
@@ -56,7 +56,7 @@
                                       Maximum="1000000"
                                       SmallChange="1"
                                       LargeChange="10"
-                                      ui:ControlHelper.PlaceholderText="Enter a whole number..."
+                                      PlaceholderText="Enter a whole number..."
                                       Tag="{Binding}" />
                         <TextBlock Text="Enter a whole number (integer)."
                                    FontSize="11"
@@ -76,7 +76,7 @@
                                       Maximum="1000000"
                                       SmallChange="0.1"
                                       LargeChange="1.0"
-                                      ui:ControlHelper.PlaceholderText="Enter a decimal number..."
+                                      PlaceholderText="Enter a decimal number..."
                                       Tag="{Binding}" />
                         <TextBlock Text="Enter a decimal number (e.g., 3.14)."
                                    FontSize="11"
@@ -307,8 +307,7 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                 <ui:ProgressRing Width="64"
-                                 Height="64"
-                                 IsActive="True" />
+                                 Height="64" />
                 <TextBlock Text="{Binding StatusMessage}"
                            Foreground="White"
                            FontSize="16"

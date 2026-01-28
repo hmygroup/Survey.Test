@@ -3,90 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
-        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+        ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
         Title="{Binding Title}"
         Height="720"
         Width="1280"
         MinHeight="600"
-        MinWidth="1000">
+        MinWidth="1000"
+        WindowStartupLocation="CenterScreen">
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <!-- Title Bar -->
-        <Grid Grid.Row="0" Background="{DynamicResource SystemControlBackgroundAccentBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <!-- Navigation Pane -->
+        <StackPanel Grid.Column="0" 
+                   Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                   Margin="12">
+            <Button Content="Home" Margin="0,0,0,8" />
+            <Button Content="Questionnaires" Margin="0,0,0,8" />
+            <Button Content="Responses" Margin="0,0,0,8" />
+        </StackPanel>
 
-            <StackPanel Grid.Column="0" 
-                       Orientation="Horizontal" 
-                       Margin="16,8">
-                <TextBlock Text="📋" 
-                          FontSize="24" 
-                          VerticalAlignment="Center"
-                          Margin="0,0,8,0" />
-                <TextBlock Text="{Binding Title}" 
-                          FontSize="20" 
-                          FontWeight="SemiBold"
-                          VerticalAlignment="Center"
-                          Foreground="White" />
-            </StackPanel>
-
-            <Button Grid.Column="1"
-                   Command="{Binding ToggleThemeCommand}"
-                   Content="{Binding CurrentTheme}"
-                   Margin="8"
-                   Padding="12,6"
-                   ToolTip="Toggle Light/Dark Theme">
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding}" />
-                            <TextBlock Text=" Mode" Margin="4,0,0,0" />
-                        </StackPanel>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
-        </Grid>
-
-        <!-- Main Content with Navigation -->
-        <ui:NavigationView Grid.Row="1"
-                          x:Name="NavigationView"
-                          PaneDisplayMode="Left"
-                          IsBackButtonVisible="Collapsed"
-                          IsSettingsVisible="True"
-                          SelectionChanged="NavigationView_SelectionChanged">
-            
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Icon="Home" 
-                                      Content="Home" 
-                                      Tag="Home" />
-                <ui:NavigationViewItemSeparator />
-                <ui:NavigationViewItem Content="Questionnaires" 
-                                      Tag="Questionnaires">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Glyph="&#xE8F1;" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-                <ui:NavigationViewItem Content="Responses" 
-                                      Tag="Responses">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Glyph="&#xE8C3;" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-            </ui:NavigationView.MenuItems>
-
-            <!-- Content Frame -->
-            <Frame x:Name="ContentFrame" 
-                   NavigationUIVisibility="Hidden" />
-
-        </ui:NavigationView>
+        <!-- Content Frame -->
+        <Frame x:Name="ContentFrame" 
+               Grid.Column="1"
+               NavigationUIVisibility="Hidden"
+               Margin="0" />
     </Grid>
 </Window>
