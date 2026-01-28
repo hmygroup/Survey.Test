@@ -1,0 +1,285 @@
+<UserControl x:Class="SurveyApp.Views.Controls.ConstraintEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:vm="clr-namespace:SurveyApp.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:ConstraintEditorViewModel}"
+             d:DesignHeight="400"
+             d:DesignWidth="600">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                   Text="Validation Constraints"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <!-- Add Constraint Section -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="12"
+                CornerRadius="4"
+                Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding AvailablePolicies}"
+                          SelectedItem="{Binding SelectedPolicy, Mode=TwoWay}"
+                          DisplayMemberPath="Name"
+                          ui:ControlHelper.PlaceholderText="Select a policy to add..."
+                          Height="32"
+                          Margin="0,0,8,0" />
+
+                <Button Grid.Column="1"
+                        Content="Add Constraint"
+                        Command="{Binding AddConstraintCommand}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Padding="16,6"
+                        Height="32" />
+            </Grid>
+        </Border>
+
+        <!-- Constraints List -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Constraint List -->
+            <Border Grid.Column="0"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- List Header -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                            Padding="8">
+                        <TextBlock Text="Applied Constraints"
+                                   FontWeight="SemiBold" />
+                    </Border>
+
+                    <!-- Constraints ListView -->
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding Constraints}"
+                              SelectedItem="{Binding SelectedConstraint, Mode=TwoWay}"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding Policy.Name}"
+                                                   FontWeight="SemiBold" />
+                                        <TextBlock FontSize="11"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                            <Run Text="Records:" />
+                                            <Run Text="{Binding PolicyRecords.Count, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="1"
+                                            Content="🗑️"
+                                            Command="{Binding DataContext.RemoveConstraintCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Padding="8,4"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="Remove constraint" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Empty State -->
+                    <TextBlock Grid.Row="1"
+                               Text="No constraints added yet"
+                               FontSize="12"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Constraints.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverse}" />
+                </Grid>
+            </Border>
+
+            <!-- Right: Policy Records Editor -->
+            <Border Grid.Column="2"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Records Header -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                            Padding="8">
+                        <TextBlock FontWeight="SemiBold">
+                            <Run Text="Policy Records" />
+                            <Run Text="(Parameters)" FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                        </TextBlock>
+                    </Border>
+
+                    <!-- Add Record Section -->
+                    <Border Grid.Row="1"
+                            Background="{DynamicResource SystemControlBackgroundBaseHighBrush}"
+                            Padding="8"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                            BorderThickness="0,0,0,1"
+                            Visibility="{Binding SelectedConstraint, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding NewPolicyRecordValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     ui:ControlHelper.PlaceholderText="e.g., min:5 or pattern:^[a-z]+$"
+                                     Height="28"
+                                     Margin="0,0,4,0" />
+
+                            <Button Grid.Column="1"
+                                    Content="+"
+                                    Command="{Binding AddPolicyRecordCommand}"
+                                    Style="{StaticResource AccentButtonStyle}"
+                                    Padding="12,4"
+                                    Height="28"
+                                    FontSize="16"
+                                    ToolTip="Add policy record" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Records ListView -->
+                    <ListView Grid.Row="2"
+                              ItemsSource="{Binding PolicyRecords}"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Value}"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center" />
+
+                                    <Button Grid.Column="1"
+                                            Content="✖"
+                                            Command="{Binding DataContext.RemovePolicyRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Padding="8,4"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            FontSize="10"
+                                            ToolTip="Remove record" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Empty State / Help Text -->
+                    <TextBlock Grid.Row="2"
+                               FontSize="12"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Padding="16"
+                               Visibility="{Binding PolicyRecords.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverse}">
+                        <Run Text="Select a constraint to add parameters." />
+                        <LineBreak />
+                        <LineBreak />
+                        <Run Text="Examples:" FontWeight="SemiBold" />
+                        <LineBreak />
+                        <Run Text="• min:5 (minimum value)" />
+                        <LineBreak />
+                        <Run Text="• max:100 (maximum value)" />
+                        <LineBreak />
+                        <Run Text="• pattern:^[a-z]+$ (regex)" />
+                        <LineBreak />
+                        <Run Text="• required:true" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="8,4"
+                Margin="0,8,0,0"
+                CornerRadius="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ui:ProgressRing Grid.Column="0"
+                                 Width="16"
+                                 Height="16"
+                                 IsActive="{Binding IsLoading}"
+                                 Margin="0,0,8,0"
+                                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusMessage}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+            </Grid>
+        </Border>
+
+        <!-- Loading Overlay -->
+        <Border Grid.Row="0"
+                Grid.RowSpan="4"
+                Background="#80000000"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <ui:ProgressRing Width="48"
+                                 Height="48"
+                                 IsActive="True" />
+                <TextBlock Text="Loading policies..."
+                           Foreground="White"
+                           Margin="0,12,0,0"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

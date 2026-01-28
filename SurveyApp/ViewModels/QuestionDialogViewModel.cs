@@ -38,6 +38,11 @@ public partial class QuestionDialogViewModel : ObservableObject
     public Guid QuestionaryId { get; set; }
 
     /// <summary>
+    /// Constraints for this question.
+    /// </summary>
+    public ICollection<ConstraintDto> Constraints { get; set; } = new List<ConstraintDto>();
+
+    /// <summary>
     /// Available question types based on .NET types.
     /// </summary>
     public ObservableCollection<string> QuestionTypes { get; } = new()
@@ -70,6 +75,7 @@ public partial class QuestionDialogViewModel : ObservableObject
         QuestionaryId = questionaryId;
         QuestionText = string.Empty;
         SelectedQuestionType = "System.String";
+        Constraints = new List<ConstraintDto>();
         _logger.LogInformation("Dialog configured for Create mode for questionary {QuestionaryId}", questionaryId);
     }
 
@@ -85,7 +91,9 @@ public partial class QuestionDialogViewModel : ObservableObject
         QuestionId = question.Id;
         QuestionText = question.QuestionText;
         SelectedQuestionType = question.QuestionType?.DotNetType ?? "System.String";
-        _logger.LogInformation("Dialog configured for Edit mode: {Id}", question.Id);
+        Constraints = question.Constraints?.ToList() ?? new List<ConstraintDto>();
+        _logger.LogInformation("Dialog configured for Edit mode: {Id} with {ConstraintCount} constraints", 
+            question.Id, Constraints.Count);
     }
 
     /// <summary>
@@ -134,8 +142,8 @@ public partial class QuestionDialogViewModel : ObservableObject
     /// <summary>
     /// Gets the question data for saving.
     /// </summary>
-    public (string questionText, string questionType) GetQuestionData()
+    public (string questionText, string questionType, ICollection<ConstraintDto> constraints) GetQuestionData()
     {
-        return (QuestionText.Trim(), SelectedQuestionType);
+        return (QuestionText.Trim(), SelectedQuestionType, Constraints);
     }
 }
