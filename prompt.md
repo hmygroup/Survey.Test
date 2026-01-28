@@ -1,16 +1,22 @@
 
 You are an expert WPF + WinUI 3 developer tasked with building a production-ready questionnaire management system.
 
-**PROJECT STATUS**: Phase 1 COMPLETED ✅ - See PHASE1_COMPLETION.md for full details
-- Foundation established with .NET 8.0, ModernWPF, MVVM, DI, Serilog
-- All DTOs, API services, and infrastructure services implemented
+**PROJECT STATUS**: Phase 2 COMPLETED ✅ - See PHASE2_COMPLETION.md for full details
+- Phase 1: Foundation established with .NET 8.0, ModernWPF, MVVM, DI, Serilog ✅
+- Phase 2: Questionary Management UI with CRUD operations, search/filter, graph caching ✅
+- All DTOs, API services, infrastructure services, and UI components implemented
 - Build verified (0 errors, 0 warnings), CodeQL passed
-- Ready for Phase 2: Questionary Management UI
+- Ready for Phase 3: Question Editor
 
 CRITICAL: You MUST read and strictly follow the complete technical documentation located at:
 \FRONTEND_TECHNICAL_DOCUMENTATION.md
 
 This file contains ALL specifications including API endpoints, data models, UI/UX rules, validation patterns, and architectural decisions. Refer to it constantly.
+
+PHASE COMPLETION STATUS:
+- Phase 1: Foundation ✅ COMPLETE (See PHASE1_COMPLETION.md)
+- Phase 2: Questionary Management ✅ COMPLETE (See PHASE2_COMPLETION.md)
+- Phase 3: Question Editor ⏭️ NEXT (Current focus)
 
 ADVANCED REQUIREMENTS - Use Latest Techniques:
 
@@ -282,15 +288,19 @@ Phase 1: Foundation (Week 1) ✅ **COMPLETED**
 
 **Status**: Production-ready foundation. See PHASE1_COMPLETION.md for full details.
 
-Phase 2: Questionary Management (Week 2) ⏭️ **NEXT**
-- [ ] QuestionaryListView with DataGrid
-- [ ] Search and filter functionality
-- [ ] Create/Edit/Delete questionary dialogs
-- [ ] GraphCache implementation for questionaries
-- [ ] SessionManager with checkpointing
-- [ ] Unit tests for QuestionaryService
+Phase 2: Questionary Management (Week 2) ✅ **COMPLETED**
+- [x] QuestionaryListView with DataGrid
+- [x] Search and filter functionality
+- [x] Create/Edit/Delete questionary dialogs
+- [x] GraphCache implementation for questionaries
+- [x] NullToBooleanConverter for UI bindings
+- [x] Service registration in DI container
+- [x] Build verified (0 errors, 0 warnings)
+- [x] CodeQL security scan passed
 
-Phase 3: Question Editor (Week 3-4)
+**Status**: Production-ready questionary management. See PHASE2_COMPLETION.md for full details.
+
+Phase 3: Question Editor (Week 3-4) ⏭️ **NEXT**
 - [ ] Question list with drag-and-drop reordering
 - [ ] Add/Edit/Delete question UI
 - [ ] QuestionType selector with Factory pattern
@@ -327,9 +337,10 @@ Phase 6: Polish & Optimization (Week 7-8)
 
 REMEMBER:
 - Phase 1 is COMPLETE ✅ - Foundation is production-ready
-- Current focus: Phase 2 - Questionary Management UI
+- Phase 2 is COMPLETE ✅ - Questionary Management UI is production-ready
+- Current focus: Phase 3 - Question Editor
 - Constantly refer to FRONTEND_TECHNICAL_DOCUMENTATION.md for ALL specifications
-- Refer to PHASE1_COMPLETION.md to understand existing implementation
+- Refer to PHASE1_COMPLETION.md and PHASE2_COMPLETION.md to understand existing implementation
 - Every API call MUST include the connection parameter
 - Follow the exact endpoint signatures documented
 - Implement Answer (session) vs QuestionResponse (individual answer) correctly
@@ -339,9 +350,9 @@ REMEMBER:
 - Track history with temporal graph pattern
 - Implement state machine for Answer transitions
 - Write clean, maintainable, testable code
-- Build upon existing services (QuestionaryService, QuestionService, etc.) - DO NOT recreate them
+- Build upon existing services (QuestionaryService, QuestionService, GraphCacheService, etc.) - DO NOT recreate them
 
-**WHAT'S ALREADY DONE** (from Phase 1):
+**WHAT'S ALREADY DONE** (from Phases 1 & 2):
 ✅ Project structure (Models, ViewModels, Services folders)
 ✅ Dependency Injection with Microsoft.Extensions.DependencyInjection
 ✅ All 9 DTOs (QuestionaryDto, QuestionDto, AnswerDto, etc.)
@@ -351,26 +362,144 @@ REMEMBER:
 ✅ AnswerService (Create, SetStatus, GetByQuestionaryId)
 ✅ QuestionResponseService (SaveResponses, UpdateResponse, GetByAnswerId)
 ✅ NavigationService, DialogService, ThemeService
+✅ GraphCacheService with dependency tracking and cascade invalidation
 ✅ MainWindow with NavigationView (ModernWPF)
+✅ QuestionaryListView with DataGrid, search/filter, CRUD operations
+✅ QuestionaryDialogWindow for Create/Edit dialogs
+✅ NullToBooleanConverter for UI bindings
 ✅ Light/Dark theme toggle with persistence
 ✅ Serilog logging (file + console)
 ✅ URL encoding for security
 ✅ Complete documentation
 
-**WHAT'S NEXT** (Phase 2 priorities):
-1. QuestionaryListView with DataGrid showing all questionnaires
-2. Search and filter functionality
-3. Create/Edit/Delete questionary dialogs
-4. QuestionaryViewModel for managing state
-5. Integration with existing QuestionaryService
-6. Unit tests for new components
+**WHAT'S NEXT** (Phase 3 priorities):
+1. Question list view with drag-and-drop reordering
+2. Add/Edit/Delete question UI with QuestionType selector
+3. Constraint editor with Policy selection
+4. Real-time validation with Rx.NET
+5. Undo/Redo with Command pattern graph
+6. Live preview pane
+7. Version history viewer
+8. Unit tests for new components
 
-Begin Phase 2 by understanding the existing codebase, then implement QuestionaryListView.
+Begin Phase 3 by understanding the existing codebase, then implement the Question Editor interface.
 ```
 
 ---
 
 ## 📝 Additional Copilot Chat Prompts for Specific Features
+
+### 🎯 PHASE 3: Question Editor (CURRENT FOCUS)
+
+#### For Question List View with Drag-and-Drop
+```
+@workspace Create a Question Editor view for managing questions within a questionary.
+
+Requirements from FRONTEND_TECHNICAL_DOCUMENTATION.md:
+- Display all questions for selected questionary in ListView
+- Enable drag-and-drop reordering (update Order property)
+- Show question text, type, and order number
+- Add/Edit/Delete question buttons
+- Persist order changes via API (bulk update)
+- Visual feedback during drag (highlight drop zones)
+- Integrate with existing QuestionService
+
+Implement:
+1. QuestionEditorView.xaml with ListView and drag-drop handlers
+2. QuestionEditorViewModel with question collection management
+3. Drag-drop behavior using WPF DragDrop events
+4. Order persistence logic
+5. Cache integration with GraphCacheService
+6. Navigate from QuestionaryListView (double-click or Edit button)
+```
+
+#### For Question Type Selector with Factory Pattern
+```
+@workspace Implement dynamic question type selector using Factory Pattern.
+
+Per documentation, QuestionType enum includes:
+- Text
+- Date  
+- Integer
+- Decimal
+- Email
+- Phone
+- Rating
+- SingleChoice
+- MultipleChoice
+- FileUpload
+
+Requirements:
+- Factory creates appropriate editor control based on QuestionType
+- Each type has specific validation rules
+- Type-specific constraints (min/max for numeric, pattern for text, etc.)
+- Preview updates in real-time as type changes
+- Use DataTemplateSelector or Factory Pattern
+
+Create:
+1. QuestionEditorFactory with Create method
+2. Type-specific editor controls (TextQuestionEditor, RatingQuestionEditor, etc.)
+3. QuestionType to UI mapper
+4. Validation rules per type
+5. Preview renderer
+```
+
+#### For Constraint Editor with Policy Integration
+```
+@workspace Build a constraint editor for applying validation policies to questions.
+
+From FRONTEND_TECHNICAL_DOCUMENTATION.md:
+- Constraints link Questions to Policies via ConstraintDto
+- Policies contain PolicyRecords (key-value validation rules)
+- Support multiple constraints per question
+- Common policies: Required, MinLength, MaxLength, Pattern, Range, Custom
+- Visual policy builder UI (no manual JSON editing)
+
+Implement:
+1. ConstraintEditorView with policy selection
+2. PolicyRecord editor (key-value pairs)
+3. Constraint list management (add/remove constraints)
+4. Integration with existing QuestionService
+5. Policy template library (predefined common policies)
+6. Real-time validation preview
+7. Save constraints via API
+```
+
+#### For Undo/Redo Command Pattern
+```
+@workspace Implement undo/redo functionality using Command Pattern with graph-based history.
+
+Requirements from prompt.md:
+- Each edit creates a Command node in undo graph
+- Support branching: undo then new edit creates branch
+- Visualize history as tree structure
+- Commands: AddQuestionCommand, DeleteQuestionCommand, ModifyQuestionCommand, ReorderQuestionsCommand
+- Ctrl+Z for undo, Ctrl+Y for redo
+- Maintain command history for session
+- Show undo stack in UI (optional)
+
+Create:
+1. ICommand interface with Execute/Undo/Redo
+2. Concrete command classes for each operation
+3. CommandHistoryManager with graph structure
+4. UI integration (menu items, keyboard shortcuts)
+5. State capture/restoration logic
+6. Limit history depth (e.g., 50 commands)
+```
+
+### 📋 PHASE 2: Completed Features (Reference)
+
+### 📋 PHASE 2: Completed Features (Reference)
+
+#### Graph-Based Caching (✅ IMPLEMENTED)
+The GraphCacheService has been successfully implemented with:
+- Dependency tracking between cache nodes
+- Cascade invalidation when parent nodes change
+- Thread-safe operations
+- Statistics tracking
+- See PHASE2_COMPLETION.md for details
+
+### 🔄 PHASE 4+: Future Features
 
 ### For State Machine Implementation
 ```
@@ -390,6 +519,28 @@ Include complete implementation with:
 2. Integration in AnswerService
 3. UI feedback for state changes (InfoBar notifications)
 4. State history tracking in database/local storage
+
+NOTE: To be implemented in Phase 4 (Response Collection).
+```
+```
+@workspace Create a robust state machine for Answer status management using the Stateless library.
+
+Requirements:
+- States: UNFINISHED, PENDING, COMPLETED, CANCELLED
+- Triggers: Start, Complete, Approve, Reject, Cancel
+- Valid transitions (refer to FRONTEND_TECHNICAL_DOCUMENTATION.md section on Answer states)
+- Log all transitions with timestamp and user
+- Prevent invalid transitions with meaningful error messages
+- Integrate with PUT /api/answer/setStatus endpoint
+- Unit tests for all valid and invalid transitions
+
+Include complete implementation with:
+1. AnswerStateMachine class
+2. Integration in AnswerService
+3. UI feedback for state changes (InfoBar notifications)
+4. State history tracking in database/local storage
+
+NOTE: To be implemented in Phase 4 (Response Collection).
 ```
 
 ### For Session Checkpoint System
@@ -412,6 +563,8 @@ Create:
 3. Recovery dialog UI
 4. Background timer for auto-save
 5. Unit tests for save/load/recovery scenarios
+
+NOTE: To be implemented in Phase 4 (Response Collection).
 ```
 
 ### For History & Versioning
@@ -434,6 +587,8 @@ Implement:
 4. DiffViewer UI with side-by-side comparison
 5. Restore functionality
 6. Storage (local SQLite for caching, API for persistence)
+
+NOTE: To be implemented in Phase 3 (Question Editor - advanced features).
 ```
 
 ### For Reactive Validation
@@ -456,6 +611,8 @@ Create:
 4. Constraint interpreters for different PolicyRecord types
 5. Local validators (pattern, length, range)
 6. Remote validators (uniqueness checks via API)
+
+NOTE: To be implemented in Phase 3 (Question Editor).
 ```
 
 ### For Conflict Resolution
@@ -478,4 +635,6 @@ Implement:
 4. Diff visualization component
 5. Merge strategy: last-write-wins with user override
 6. Tests for various conflict scenarios
+
+NOTE: To be implemented in Phase 5 (Response Analysis - advanced features).
 ```
