@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:vm="clr-namespace:SurveyApp.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:ConstraintEditorViewModel}"
@@ -40,9 +40,7 @@
                 <ComboBox Grid.Column="0"
                           ItemsSource="{Binding AvailablePolicies}"
                           SelectedItem="{Binding SelectedPolicy, Mode=TwoWay}"
-                          DisplayMemberPath="Name"
-                          ui:ControlHelper.PlaceholderText="Select a policy to add..."
-                          Height="32"
+                          DisplayMemberPath="Name" Height="32"
                           Margin="0,0,8,0" />
 
                 <Button Grid.Column="1"
@@ -163,11 +161,9 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding NewPolicyRecordValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     ui:ControlHelper.PlaceholderText="e.g., min:5 or pattern:^[a-z]+$"
-                                     Height="28"
-                                     Margin="0,0,4,0" />
+                             <ui:TextBox Grid.Column="0"
+                                      Text="{Binding NewPolicyRecordValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28"
+                                      Margin="0,0,4,0" />
 
                             <Button Grid.Column="1"
                                     Content="+"
@@ -252,9 +248,7 @@
 
                 <ui:ProgressRing Grid.Column="0"
                                  Width="16"
-                                 Height="16"
-                                 IsActive="{Binding IsLoading}"
-                                 Margin="0,0,8,0"
+                                 Height="16" Margin="0,0,8,0"
                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <TextBlock Grid.Column="1"
@@ -273,8 +267,7 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                 <ui:ProgressRing Width="48"
-                                 Height="48"
-                                 IsActive="True" />
+                                 Height="48" />
                 <TextBlock Text="Loading policies..."
                            Foreground="White"
                            Margin="0,12,0,0"

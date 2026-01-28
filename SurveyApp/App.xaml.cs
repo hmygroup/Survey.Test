@@ -1,3 +1,5 @@
+using SurveyApp.Services.Infrastructure;
+
 using Serilog;
 
 namespace SurveyApp;
@@ -27,7 +29,7 @@ public partial class App : Application
             _serviceProvider = ConfigureServices();
 
             // Load theme preference
-            var themeService = _serviceProvider.GetRequiredService<ThemeService>();
+            var themeService = _serviceProvider.GetRequiredService<SurveyApp.Services.Infrastructure.ThemeService>();
             themeService.LoadThemePreference();
 
             // Cleanup stale checkpoints
@@ -131,9 +133,9 @@ public partial class App : Application
         });
 
         // Register Infrastructure Services
-        services.AddSingleton<NavigationService>();
-        services.AddSingleton<DialogService>();
-        services.AddSingleton<ThemeService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.NavigationService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.DialogService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.ThemeService>();
         services.AddSingleton<SessionManager>();
         services.AddSingleton<SurveyApp.Services.Infrastructure.QuestionEditorFactory>();
         services.AddTransient<ReactiveValidationService>();

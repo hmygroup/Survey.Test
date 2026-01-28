@@ -60,7 +60,7 @@ public partial class ResponseFormView : Page
             return;
         }
 
-        var numberBox = FindVisualChild<ModernWpf.Controls.NumberBox>(contentControl);
+        var numberBox = FindVisualChild<AppControls.NumberBox>(contentControl);
         if (numberBox != null)
         {
             numberBox.ValueChanged -= NumberBox_ValueChanged;
@@ -104,11 +104,11 @@ public partial class ResponseFormView : Page
         }
     }
 
-    private void NumberBox_ValueChanged(ModernWpf.Controls.NumberBox sender, ModernWpf.Controls.NumberBoxValueChangedEventArgs args)
+    private void NumberBox_ValueChanged(object sender, RoutedEventArgs args)
     {
-        if (_viewModel.CurrentQuestion != null && !double.IsNaN(args.NewValue))
+        if (sender is AppControls.NumberBox numberBox && _viewModel.CurrentQuestion != null && numberBox.Value.HasValue)
         {
-            _viewModel.UpdateResponse(args.NewValue.ToString());
+            _viewModel.UpdateResponse(numberBox.Value.Value.ToString());
         }
     }
 
@@ -152,7 +152,7 @@ public partial class ResponseFormView : Page
                 return;
             }
 
-            var numberBox = FindVisualChild<ModernWpf.Controls.NumberBox>(contentControl);
+            var numberBox = FindVisualChild<AppControls.NumberBox>(contentControl);
             if (numberBox != null && double.TryParse(response, out var number))
             {
                 numberBox.Value = number;

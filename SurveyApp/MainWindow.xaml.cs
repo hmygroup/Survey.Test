@@ -1,3 +1,5 @@
+using SurveyApp.Services.Infrastructure;
+
 namespace SurveyApp;
 
 /// <summary>
@@ -6,9 +8,9 @@ namespace SurveyApp;
 public partial class MainWindow : Window
 {
     private readonly MainWindowViewModel _viewModel;
-    private readonly NavigationService _navigationService;
+    private readonly SurveyApp.Services.Infrastructure.NavigationService _navigationService;
 
-    public MainWindow(MainWindowViewModel viewModel, NavigationService navigationService)
+    public MainWindow(MainWindowViewModel viewModel, SurveyApp.Services.Infrastructure.NavigationService navigationService)
     {
         InitializeComponent();
         
@@ -22,30 +24,5 @@ public partial class MainWindow : Window
         
         // Navigate to Home view on startup
         _navigationService.NavigateTo<HomeView>();
-    }
-
-    private void NavigationView_SelectionChanged(ModernWpf.Controls.NavigationView sender, ModernWpf.Controls.NavigationViewSelectionChangedEventArgs args)
-    {
-        if (args.SelectedItem is ModernWpf.Controls.NavigationViewItem item)
-        {
-            var tag = item.Tag?.ToString();
-            
-            switch (tag)
-            {
-                case "Home":
-                    _viewModel.NavigateToHomeCommand.Execute(null);
-                    break;
-                case "Questionnaires":
-                    _viewModel.NavigateToQuestionnairesCommand.Execute(null);
-                    break;
-                case "Responses":
-                    _viewModel.NavigateToResponsesCommand.Execute(null);
-                    break;
-            }
-        }
-        else if (args.IsSettingsSelected)
-        {
-            // Navigate to settings page when created
-        }
     }
 }

@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:vm="clr-namespace:SurveyApp.ViewModels"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:AnswerAnalysisViewModel}"
@@ -191,8 +191,8 @@
                     <TextBlock Text="User"
                                FontSize="12"
                                Margin="0,0,0,4" />
-                    <TextBox Text="{Binding SearchUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             ui:ControlHelper.PlaceholderText="Filter by user..."
+                    <ui:TextBox Text="{Binding SearchUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="Filter by user..."
                              HorizontalAlignment="Stretch" />
                 </StackPanel>
 
@@ -337,8 +337,7 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                 <ui:ProgressRing Width="64"
-                                 Height="64"
-                                 IsActive="True" />
+                                 Height="64" />
                 <TextBlock Text="{Binding StatusMessage}"
                            Foreground="White"
                            FontSize="16"

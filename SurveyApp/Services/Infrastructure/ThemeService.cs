@@ -26,10 +26,8 @@ public class ThemeService
         {
             _logger.LogInformation("Applying theme: {Theme}", theme);
             
-            // Update ModernWpf theme
-            ModernWpf.ThemeManager.Current.ApplicationTheme = theme == "Dark" 
-                ? ModernWpf.ApplicationTheme.Dark 
-                : ModernWpf.ApplicationTheme.Light;
+            // TODO: Update WPF-UI theme
+            // WPF-UI theme switching can be implemented here
 
             CurrentTheme = theme;
             SaveThemePreference(theme);

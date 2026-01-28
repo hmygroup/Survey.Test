@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="1000">
 
@@ -22,27 +22,27 @@
             <StackPanel Orientation="Horizontal" 
                        HorizontalAlignment="Center"
                        Margin="0,32,0,0">
-                <ui:SimpleStackPanel Spacing="8" Margin="0,0,16,0">
+                <StackPanel Margin="0,0,16,0">
                     <TextBlock Text="📊" FontSize="32" TextAlignment="Center" />
                     <TextBlock Text="Create Questionnaires" FontWeight="SemiBold" />
                     <TextBlock Text="Design custom surveys" 
                              TextAlignment="Center"
                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel Spacing="8" Margin="16,0">
+                </StackPanel>
+                <StackPanel Margin="16,0">
                     <TextBlock Text="✏️" FontSize="32" TextAlignment="Center" />
                     <TextBlock Text="Collect Responses" FontWeight="SemiBold" />
                     <TextBlock Text="Gather user feedback" 
                              TextAlignment="Center"
                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel Spacing="8" Margin="16,0,0,0">
+                </StackPanel>
+                <StackPanel Margin="16,0,0,0">
                     <TextBlock Text="📈" FontSize="32" TextAlignment="Center" />
                     <TextBlock Text="Analyze Results" FontWeight="SemiBold" />
                     <TextBlock Text="View insights" 
                              TextAlignment="Center"
                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </ui:SimpleStackPanel>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>
