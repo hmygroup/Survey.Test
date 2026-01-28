@@ -12,6 +12,13 @@ public partial class ResponseFormViewModel : ObservableObject
     private readonly SessionManager _sessionManager;
     private readonly ILogger<ResponseFormViewModel> _logger;
     private string _questionaryTitle = string.Empty;
+    
+    // Metadata tracking
+    private readonly Dictionary<Guid, DateTime> _questionStartTimes = new();
+    private readonly Dictionary<Guid, TimeSpan> _questionDurations = new();
+    private readonly Dictionary<Guid, int> _questionInteractions = new();
+    private DateTime _sessionStartTime;
+    private readonly string _deviceInfo;
 
     [ObservableProperty]
     private ObservableCollection<QuestionDto> _questions = new();
@@ -59,6 +66,13 @@ public partial class ResponseFormViewModel : ObservableObject
         _answerService = answerService;
         _sessionManager = sessionManager;
         _logger = logger;
+        
+        // Collect device info
+        _deviceInfo = $"OS: {Environment.OSVersion}, " +
+                      $"CLR: {Environment.Version}, " +
+                      $"Machine: {Environment.MachineName}, " +
+                      $"User: {Environment.UserName}, " +
+                      $"64-bit: {Environment.Is64BitOperatingSystem}";
     }
 
     /// <summary>
@@ -72,6 +86,7 @@ public partial class ResponseFormViewModel : ObservableObject
             StatusMessage = "Loading questions...";
             CurrentAnswer = answer;
             _questionaryTitle = questionaryTitle;
+            _sessionStartTime = DateTime.UtcNow;
 
             // Load questions for the questionary
             var questions = await _questionService.GetByQuestionaryIdAsync(answer.QuestionaryId);
@@ -80,6 +95,12 @@ public partial class ResponseFormViewModel : ObservableObject
                 Questions = new ObservableCollection<QuestionDto>(questions.OrderBy(q => q.Id));
                 CurrentQuestionIndex = 0;
                 CurrentQuestion = Questions.FirstOrDefault();
+                
+                // Start tracking time for first question
+                if (CurrentQuestion != null)
+                {
+                    _questionStartTimes[CurrentQuestion.Id] = DateTime.UtcNow;
+                }
                 
                 UpdateProgressPercentage();
                 StatusMessage = $"Question 1 of {Questions.Count}";
@@ -113,10 +134,23 @@ public partial class ResponseFormViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(HasNextQuestion))]
     private async Task NextQuestion()
     {
+        // Track time spent on current question
+        if (CurrentQuestion != null && _questionStartTimes.TryGetValue(CurrentQuestion.Id, out var startTime))
+        {
+            _questionDurations[CurrentQuestion.Id] = DateTime.UtcNow - startTime;
+        }
+        
         await SaveCurrentResponse();
         
         CurrentQuestionIndex++;
         CurrentQuestion = Questions[CurrentQuestionIndex];
+        
+        // Start tracking time for new question
+        if (CurrentQuestion != null)
+        {
+            _questionStartTimes[CurrentQuestion.Id] = DateTime.UtcNow;
+        }
+        
         UpdateProgressPercentage();
         StatusMessage = $"Question {CurrentQuestionIndex + 1} of {Questions.Count}";
     }
@@ -127,10 +161,23 @@ public partial class ResponseFormViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(HasPreviousQuestion))]
     private async Task PreviousQuestion()
     {
+        // Track time spent on current question
+        if (CurrentQuestion != null && _questionStartTimes.TryGetValue(CurrentQuestion.Id, out var startTime))
+        {
+            _questionDurations[CurrentQuestion.Id] = DateTime.UtcNow - startTime;
+        }
+        
         await SaveCurrentResponse();
         
         CurrentQuestionIndex--;
         CurrentQuestion = Questions[CurrentQuestionIndex];
+        
+        // Start tracking time for new question
+        if (CurrentQuestion != null)
+        {
+            _questionStartTimes[CurrentQuestion.Id] = DateTime.UtcNow;
+        }
+        
         UpdateProgressPercentage();
         StatusMessage = $"Question {CurrentQuestionIndex + 1} of {Questions.Count}";
     }
@@ -147,19 +194,40 @@ public partial class ResponseFormViewModel : ObservableObject
         {
             if (Responses.TryGetValue(CurrentQuestion.Id, out var responseValue))
             {
+                // Calculate time spent on this question
+                var timeSpent = _questionDurations.ContainsKey(CurrentQuestion.Id)
+                    ? _questionDurations[CurrentQuestion.Id]
+                    : (_questionStartTimes.ContainsKey(CurrentQuestion.Id)
+                        ? DateTime.UtcNow - _questionStartTimes[CurrentQuestion.Id]
+                        : TimeSpan.Zero);
+                
+                // Get interaction count
+                var interactions = _questionInteractions.ContainsKey(CurrentQuestion.Id)
+                    ? _questionInteractions[CurrentQuestion.Id]
+                    : 0;
+                
+                // Build metadata JSON
+                var metadata = $"{{" +
+                    $"\"timestamp\":\"{DateTime.UtcNow:O}\"," +
+                    $"\"timeSpentSeconds\":{timeSpent.TotalSeconds:F2}," +
+                    $"\"interactions\":{interactions}," +
+                    $"\"deviceInfo\":\"{_deviceInfo.Replace("\"", "\\\"")}\"" +
+                    $"}}";
+
                 // Save or update response
                 var questionResponse = new
                 {
                     questionId = CurrentQuestion.Id,
                     answerId = CurrentAnswer.Id,
                     response = responseValue,
-                    metadata = $"{{\"timestamp\":\"{DateTime.UtcNow:O}\"}}"
+                    metadata = metadata
                 };
 
                 await _questionResponseService.SaveResponsesAsync(
                     new[] { questionResponse });
 
-                _logger.LogInformation("Saved response for Question {QuestionId}", CurrentQuestion.Id);
+                _logger.LogInformation("Saved response for Question {QuestionId} (Time: {Time}s, Interactions: {Count})", 
+                    CurrentQuestion.Id, timeSpent.TotalSeconds, interactions);
             }
         }
         catch (Exception ex)
@@ -176,6 +244,14 @@ public partial class ResponseFormViewModel : ObservableObject
         if (CurrentQuestion != null)
         {
             Responses[CurrentQuestion.Id] = value;
+            
+            // Track interaction
+            if (!_questionInteractions.ContainsKey(CurrentQuestion.Id))
+            {
+                _questionInteractions[CurrentQuestion.Id] = 0;
+            }
+            _questionInteractions[CurrentQuestion.Id]++;
+            
             UpdateProgressPercentage();
         }
     }
@@ -188,30 +264,57 @@ public partial class ResponseFormViewModel : ObservableObject
     {
         try
         {
+            // Validation: Check if all questions are answered
+            var unansweredCount = Questions.Count - Responses.Count;
+            if (unansweredCount > 0)
+            {
+                StatusMessage = $"Warning: {unansweredCount} question(s) not answered";
+                _logger.LogWarning("Attempting to submit with {Count} unanswered questions", unansweredCount);
+                
+                // Could show a confirmation dialog here, but for minimal changes, just proceed
+            }
+            
             IsLoading = true;
             StatusMessage = "Submitting responses...";
 
-            // Save current response
+            // Track final question time
+            if (CurrentQuestion != null && _questionStartTimes.TryGetValue(CurrentQuestion.Id, out var startTime))
+            {
+                _questionDurations[CurrentQuestion.Id] = DateTime.UtcNow - startTime;
+            }
+
+            // Save current response with final metadata
             await SaveCurrentResponse();
+
+            // Calculate total session time
+            var totalSessionTime = DateTime.UtcNow - _sessionStartTime;
 
             // Transition state to PENDING
             if (CurrentAnswer != null)
             {
+                var notes = $"Survey completed. Total time: {totalSessionTime.TotalMinutes:F2} minutes. " +
+                           $"Questions answered: {Responses.Count}/{Questions.Count}. " +
+                           $"Device: {_deviceInfo}";
+                
                 var success = await _answerService.TransitionStateAsync(
                     CurrentAnswer.Id,
                     AnswerTrigger.Complete,
                     CurrentAnswer.AnswerStatus?.AnswerStatus ?? AnswerStatus.Unfinished,
                     CurrentAnswer.User,
-                    "Survey completed and submitted");
+                    notes);
 
                 if (success)
                 {
-                    StatusMessage = "Survey submitted successfully!";
-                    _logger.LogInformation("Answer {AnswerId} submitted successfully", CurrentAnswer.Id);
+                    StatusMessage = $"✓ Survey submitted successfully! Total time: {totalSessionTime.TotalMinutes:F1} minutes";
+                    _logger.LogInformation("Answer {AnswerId} submitted successfully. Time: {Time} minutes, Responses: {Count}/{Total}",
+                        CurrentAnswer.Id, totalSessionTime.TotalMinutes, Responses.Count, Questions.Count);
+                    
+                    // Delete checkpoint after successful submission
+                    await _sessionManager.DeleteCheckpointAsync(CurrentAnswer.Id);
                 }
                 else
                 {
-                    StatusMessage = "Failed to submit survey";
+                    StatusMessage = "❌ Failed to submit survey. Please try again.";
                     _logger.LogWarning("Failed to submit Answer {AnswerId}", CurrentAnswer.Id);
                 }
             }
@@ -219,7 +322,7 @@ public partial class ResponseFormViewModel : ObservableObject
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error submitting Answer {AnswerId}", CurrentAnswer?.Id);
-            StatusMessage = "Error submitting survey";
+            StatusMessage = "❌ Error submitting survey. Please try again.";
         }
         finally
         {
@@ -261,7 +364,15 @@ public partial class ResponseFormViewModel : ObservableObject
             Metadata = new Dictionary<string, object>
             {
                 ["totalQuestions"] = Questions.Count,
-                ["progressPercentage"] = ProgressPercentage
+                ["progressPercentage"] = ProgressPercentage,
+                ["sessionStartTime"] = _sessionStartTime,
+                ["deviceInfo"] = _deviceInfo,
+                ["questionDurations"] = _questionDurations.ToDictionary(
+                    kvp => kvp.Key.ToString(), 
+                    kvp => kvp.Value.TotalSeconds),
+                ["questionInteractions"] = _questionInteractions.ToDictionary(
+                    kvp => kvp.Key.ToString(), 
+                    kvp => kvp.Value)
             }
         };
 
