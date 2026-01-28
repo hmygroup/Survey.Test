@@ -137,17 +137,122 @@ public class AnswerService : ApiService
     }
 
     /// <summary>
-    /// Retrieves all answers for a specific questionnaire.
+    /// Retrieves all answers for a specific questionnaire with filters and pagination.
     /// </summary>
-    public async Task<IEnumerable<AnswerDto>?> GetByQuestionaryIdAsync(
+    public async Task<PaginatedAnswersDto?> GetByQuestionaryIdAsync(
+        Guid questionaryId,
+        string? status = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null,
+        string? user = null,
+        int pageNumber = 1,
+        int pageSize = 50,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (!string.IsNullOrEmpty(status))
+            queryParams.Add($"status={Uri.EscapeDataString(status)}");
+        if (fromDate.HasValue)
+            queryParams.Add($"fromDate={Uri.EscapeDataString(fromDate.Value.ToString("O"))}");
+        if (toDate.HasValue)
+            queryParams.Add($"toDate={Uri.EscapeDataString(toDate.Value.ToString("O"))}");
+        if (!string.IsNullOrEmpty(user))
+            queryParams.Add($"user={Uri.EscapeDataString(user)}");
+        queryParams.Add($"pageNumber={pageNumber}");
+        queryParams.Add($"pageSize={pageSize}");
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
+        
+        return await GetAsync<PaginatedAnswersDto>(
+            $"Answer/{ConnectionId}/questionary/{questionaryId}{queryString}",
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets statistics for answers of a questionary.
+    /// </summary>
+    public async Task<AnswerStatisticsDto?> GetStatisticsAsync(
         Guid questionaryId,
         CancellationToken cancellationToken = default)
     {
-        // Note: This endpoint is not documented in the API
-        // This method may not work until the API provides the endpoint
-        return await GetAsync<IEnumerable<AnswerDto>>(
-            $"Answer/{ConnectionId}/questionary/{questionaryId}",
+        return await GetAsync<AnswerStatisticsDto>(
+            $"Answer/{ConnectionId}/questionary/{questionaryId}/statistics",
             cancellationToken);
+    }
+
+    /// <summary>
+    /// Searches answers with advanced filters.
+    /// </summary>
+    public async Task<PaginatedAnswersDto?> SearchAnswersAsync(
+        Guid questionaryId,
+        string? status = null,
+        string? user = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null,
+        int? cardIdMin = null,
+        int? cardIdMax = null,
+        string? sortBy = null,
+        bool sortDescending = false,
+        int pageNumber = 1,
+        int pageSize = 25,
+        CancellationToken cancellationToken = default)
+    {
+        var searchData = new
+        {
+            questionaryId = questionaryId,
+            filters = new
+            {
+                status = status,
+                user = user,
+                fromDate = fromDate?.ToString("O"),
+                toDate = toDate?.ToString("O"),
+                cardIdMin = cardIdMin,
+                cardIdMax = cardIdMax
+            },
+            sorting = new
+            {
+                sortBy = sortBy,
+                descending = sortDescending
+            },
+            pagination = new
+            {
+                pageNumber = pageNumber,
+                pageSize = pageSize
+            }
+        };
+
+        return await PostAsync<object, PaginatedAnswersDto>(
+            $"Answer/{ConnectionId}/search",
+            searchData,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Exports answers to CSV format.
+    /// </summary>
+    public async Task<byte[]?> ExportToCsvAsync(
+        Guid questionaryId,
+        string? status = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (!string.IsNullOrEmpty(status))
+            queryParams.Add($"status={Uri.EscapeDataString(status)}");
+        if (fromDate.HasValue)
+            queryParams.Add($"fromDate={Uri.EscapeDataString(fromDate.Value.ToString("O"))}");
+        if (toDate.HasValue)
+            queryParams.Add($"toDate={Uri.EscapeDataString(toDate.Value.ToString("O"))}");
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
+        
+        // TODO: Implement CSV download - needs access to HttpClient or a new DownloadBytesAsync method in ApiService
+        _answerLogger.LogWarning("ExportToCsvAsync not yet fully implemented");
+        await Task.CompletedTask;
+        return null;
     }
 
     /// <summary>

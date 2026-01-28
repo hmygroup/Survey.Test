@@ -310,6 +310,37 @@ public partial class QuestionaryListViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Views answer responses and analysis for the selected questionnaire.
+    /// Opens the Answer Analysis view.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
+    private async Task ViewResponsesAsync()
+    {
+        if (SelectedQuestionary == null) return;
+
+        try
+        {
+            _logger.LogInformation("Opening answer analysis for questionary: {Id}", SelectedQuestionary.Id);
+
+            // Get the AnswerAnalysisView from DI
+            var answerAnalysisView = _serviceProvider.GetRequiredService<AnswerAnalysisView>();
+            
+            // Initialize it with the current questionary
+            await answerAnalysisView.InitializeAsync(SelectedQuestionary);
+            
+            // Navigate to the initialized view instance
+            _navigationService.NavigateToInstance(answerAnalysisView);
+            
+            _logger.LogInformation("Navigated to answer analysis for questionary: {Id}", SelectedQuestionary.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error opening answer analysis: {Id}", SelectedQuestionary.Id);
+            await _dialogService.ShowErrorAsync("Error", $"Failed to open answer analysis: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Determines if edit or delete commands can execute.
     /// </summary>
     private bool CanEditOrDelete() => SelectedQuestionary != null;
@@ -322,5 +353,6 @@ public partial class QuestionaryListViewModel : ObservableObject
         EditQuestionaryCommand.NotifyCanExecuteChanged();
         DeleteQuestionaryCommand.NotifyCanExecuteChanged();
         ViewDetailsCommand.NotifyCanExecuteChanged();
+        ViewResponsesCommand.NotifyCanExecuteChanged();
     }
 }

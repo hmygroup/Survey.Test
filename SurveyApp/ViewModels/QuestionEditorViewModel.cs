@@ -7,6 +7,7 @@ namespace SurveyApp.ViewModels;
 public partial class QuestionEditorViewModel : ObservableObject
 {
     private readonly QuestionService _questionService;
+    private readonly ConstraintService _constraintService;
     private readonly DialogService _dialogService;
     private readonly NavigationService _navigationService;
     private readonly IServiceProvider _serviceProvider;
@@ -35,12 +36,14 @@ public partial class QuestionEditorViewModel : ObservableObject
     /// </summary>
     public QuestionEditorViewModel(
         QuestionService questionService,
+        ConstraintService constraintService,
         DialogService dialogService,
         NavigationService navigationService,
         IServiceProvider serviceProvider,
         ILogger<QuestionEditorViewModel> logger)
     {
         _questionService = questionService;
+        _constraintService = constraintService;
         _dialogService = dialogService;
         _navigationService = navigationService;
         _serviceProvider = serviceProvider;
@@ -225,28 +228,36 @@ public partial class QuestionEditorViewModel : ObservableObject
             {
                 var (questionText, questionType, constraints) = dialog.GetQuestionData();
 
-                // Update the question in the collection
-                var index = Questions.IndexOf(SelectedQuestion);
-                if (index >= 0)
-                {
-                    // Create updated question object
-                    var updatedQuestion = SelectedQuestion with
-                    {
-                        QuestionText = questionText,
-                        QuestionType = new QuestionTypeDto
-                        {
-                            Id = SelectedQuestion.QuestionType?.Id ?? Guid.NewGuid(),
-                            DotNetType = questionType
-                        },
-                        Constraints = constraints.ToList()
-                    };
+                IsLoading = true;
+                StatusMessage = "Updating question...";
 
-                    Questions[index] = updatedQuestion;
-                    SelectedQuestion = updatedQuestion;
+                // Call API to update question
+                var updatedQuestion = await _questionService.UpdateAsync(
+                    SelectedQuestion.Id,
+                    questionText,
+                    questionType,
+                    CurrentQuestionary!.Id,
+                    constraints
+                );
+
+                if (updatedQuestion != null)
+                {
+                    // Update the question in the collection
+                    var index = Questions.IndexOf(SelectedQuestion);
+                    if (index >= 0)
+                    {
+                        Questions[index] = updatedQuestion;
+                        SelectedQuestion = updatedQuestion;
+                    }
 
                     StatusMessage = "Question updated successfully";
                     _logger.LogInformation("Question updated successfully: {QuestionId}", updatedQuestion.Id);
-                    await _dialogService.ShowMessageAsync("Success", "Question updated successfully.\n\nNote: API update endpoint not yet available. Changes are local only.");
+                    await _dialogService.ShowMessageAsync("Success", "Question updated successfully.");
+                }
+                else
+                {
+                    StatusMessage = "Failed to update question";
+                    await _dialogService.ShowErrorAsync("Error", "Failed to update question - no response from server");
                 }
             }
         }
@@ -329,6 +340,12 @@ public partial class QuestionEditorViewModel : ObservableObject
             return;
         }
 
+        if (CurrentQuestionary == null)
+        {
+            _logger.LogWarning("Cannot reorder: CurrentQuestionary is null");
+            return;
+        }
+
         try
         {
             _logger.LogInformation("Reordering question from index {OldIndex} to {NewIndex}", oldIndex, newIndex);
@@ -337,16 +354,26 @@ public partial class QuestionEditorViewModel : ObservableObject
             Questions.RemoveAt(oldIndex);
             Questions.Insert(newIndex, question);
 
-            StatusMessage = "Question reordered";
-            
-            // TODO: Implement bulk order update API call
-            // TODO: Add to undo/redo history
-            
-            _logger.LogInformation("Question reordered successfully");
+            // Build the new order list
+            var questionOrders = Questions.Select((q, idx) => (q.Id, idx + 1)).ToList();
+
+            // Call API to persist the new order
+            await _questionService.ReorderQuestionsAsync(
+                CurrentQuestionary.Id,
+                questionOrders
+            );
+
+            StatusMessage = "Questions reordered successfully";
+            _logger.LogInformation("Questions reordered successfully");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error reordering questions");
+            StatusMessage = $"Error reordering questions: {ex.Message}";
+            
+            // Revert the local change
+            await LoadQuestionsAsync();
+            
             await _dialogService.ShowErrorAsync("Error", $"Failed to reorder questions: {ex.Message}");
         }
     }

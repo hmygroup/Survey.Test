@@ -35,3 +35,6 @@ global using SurveyApp.Services.StateMachine;
 global using SurveyApp.ViewModels;
 global using SurveyApp.Views;
 global using SurveyApp.Views.Dialogs;
+global using AppUI = Wpf.Ui;
+global using AppControls = Wpf.Ui.Controls;
+global using Wpf.Ui.Appearance;

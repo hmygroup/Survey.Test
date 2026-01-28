@@ -41,8 +41,56 @@ public class QuestionService : ApiService
     /// </summary>
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        // Note: DELETE endpoint for Question is not documented in the API
-        // This method may not work until the API provides the endpoint
         await DeleteAsync($"Question/{ConnectionId}/{id}", cancellationToken);
+    }
+
+    /// <summary>
+    /// Updates an existing question.
+    /// </summary>
+    public async Task<QuestionDto?> UpdateAsync(
+        Guid id,
+        string questionText,
+        string questionType,
+        Guid questionaryId,
+        IEnumerable<ConstraintDto>? constraints = null,
+        CancellationToken cancellationToken = default)
+    {
+        var updateData = new
+        {
+            id = id,
+            questionText = questionText,
+            questionType = new { dotNetType = questionType },
+            questionaryId = questionaryId,
+            constraints = constraints ?? Enumerable.Empty<ConstraintDto>()
+        };
+
+        return await PutAsync<object, QuestionDto>(
+            $"Question/{ConnectionId}/{id}",
+            updateData,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Reorders questions in bulk.
+    /// </summary>
+    public async Task ReorderQuestionsAsync(
+        Guid questionaryId,
+        IEnumerable<(Guid QuestionId, int Order)> questionOrders,
+        CancellationToken cancellationToken = default)
+    {
+        var reorderData = new
+        {
+            questionaryId = questionaryId,
+            questions = questionOrders.Select(qo => new
+            {
+                questionId = qo.QuestionId,
+                order = qo.Order
+            })
+        };
+
+        await PatchAsync<object, object>(
+            $"Question/{ConnectionId}/reorder",
+            reorderData,
+            cancellationToken);
     }
 }

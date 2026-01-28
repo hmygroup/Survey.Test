@@ -1,3 +1,5 @@
+using SurveyApp.Services.Infrastructure;
+
 using Serilog;
 
 namespace SurveyApp;
@@ -27,7 +29,7 @@ public partial class App : Application
             _serviceProvider = ConfigureServices();
 
             // Load theme preference
-            var themeService = _serviceProvider.GetRequiredService<ThemeService>();
+            var themeService = _serviceProvider.GetRequiredService<SurveyApp.Services.Infrastructure.ThemeService>();
             themeService.LoadThemePreference();
 
             // Cleanup stale checkpoints
@@ -124,10 +126,16 @@ public partial class App : Application
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        services.AddHttpClient<ConstraintService>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
         // Register Infrastructure Services
-        services.AddSingleton<NavigationService>();
-        services.AddSingleton<DialogService>();
-        services.AddSingleton<ThemeService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.NavigationService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.DialogService>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.ThemeService>();
         services.AddSingleton<SessionManager>();
         services.AddSingleton<SurveyApp.Services.Infrastructure.QuestionEditorFactory>();
         services.AddTransient<ReactiveValidationService>();
@@ -149,6 +157,7 @@ public partial class App : Application
         services.AddTransient<QuestionDialogViewModel>();
         services.AddTransient<ConstraintEditorViewModel>();
         services.AddTransient<ResponseFormViewModel>();
+        services.AddTransient<AnswerAnalysisViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
@@ -158,6 +167,7 @@ public partial class App : Application
         services.AddTransient<QuestionEditorView>();
         services.AddTransient<QuestionDialogWindow>();
         services.AddTransient<ResponseFormView>();
+        services.AddTransient<AnswerAnalysisView>();
 
         // Add Logging
         services.AddLogging(builder =>

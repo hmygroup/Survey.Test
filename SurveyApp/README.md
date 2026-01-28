@@ -20,6 +20,20 @@ A modern, production-ready WPF application for managing questionnaires and surve
 - **Visual Studio 2022** (recommended) or **Visual Studio Code** with C# extension
 - **Backend API** running at `http://localhost:5049/api/` with Connection ID `10001`
 
+### ⚠️ Backend API Status
+
+**Note**: Some frontend features are **blocked** by missing backend APIs. See:
+- **[../BACKEND_API_SUMMARY.md](../BACKEND_API_SUMMARY.md)** - Quick overview of missing endpoints
+- **[../BACKEND_API_REQUIREMENTS.md](../BACKEND_API_REQUIREMENTS.md)** - Complete API specifications
+
+**Current Blockers**:
+- Question Edit/Delete operations (data not persisted)
+- Drag-drop question reordering (order not saved)
+- Constraint management (cannot save constraints)
+- Response analysis features (Phase 5 blocked)
+
+The frontend is **ready to integrate** immediately once these APIs are deployed.
+
 ## 🛠️ Setup Instructions
 
 ### 1. Clone the Repository
