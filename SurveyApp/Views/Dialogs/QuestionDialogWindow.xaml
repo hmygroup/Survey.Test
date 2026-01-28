@@ -104,11 +104,31 @@
                                               Margin="0,0,0,16" />
 
                 <!-- Validation Message -->
-                <TextBlock Text="{Binding ValidationMessage}"
-                          Foreground="Red"
-                          FontSize="12"
-                          Margin="0,8,0,0"
-                          Visibility="{Binding HasValidationError, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Border Visibility="{Binding HasValidationError, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Background="#FFEBEE"
+                       BorderBrush="#D32F2F"
+                       BorderThickness="1"
+                       CornerRadius="4"
+                       Padding="12,8"
+                       Margin="0,8,0,0">
+                    <TextBlock Text="{Binding ValidationMessage}"
+                              Foreground="#D32F2F"
+                              FontSize="12"
+                              TextWrapping="Wrap" />
+                </Border>
+                
+                <Border Visibility="{Binding HasValidationWarning, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Background="#FFF3E0"
+                       BorderBrush="#F57C00"
+                       BorderThickness="1"
+                       CornerRadius="4"
+                       Padding="12,8"
+                       Margin="0,8,0,0">
+                    <TextBlock Text="{Binding ValidationMessage}"
+                              Foreground="#F57C00"
+                              FontSize="12"
+                              TextWrapping="Wrap" />
+                </Border>
             </StackPanel>
         </ScrollViewer>
 

@@ -125,6 +125,7 @@ public partial class App : Application
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<QuestionEditorFactory>();
+        services.AddTransient<ReactiveValidationService>();
         
         // Register Caching Services
         services.AddMemoryCache();
