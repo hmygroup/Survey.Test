@@ -45,7 +45,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void NavigateToHome()
     {
         _logger.LogInformation("Navigating to Home");
-        // TODO: Implement navigation when views are created
+        // TODO: Implement Home view when created
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void NavigateToQuestionnaires()
     {
         _logger.LogInformation("Navigating to Questionnaires");
-        // TODO: Implement navigation when views are created
+        _navigationService.NavigateTo<QuestionaryListView>();
     }
 
     /// <summary>
@@ -65,6 +65,6 @@ public partial class MainWindowViewModel : ObservableObject
     private void NavigateToResponses()
     {
         _logger.LogInformation("Navigating to Responses");
-        // TODO: Implement navigation when views are created
+        // TODO: Implement Responses view when created
     }
 }

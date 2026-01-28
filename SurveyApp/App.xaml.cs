@@ -115,9 +115,11 @@ public partial class App : Application
 
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<QuestionaryListViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
+        services.AddTransient<QuestionaryListView>();
 
         // Add Logging
         services.AddLogging(builder =>
