@@ -127,6 +127,7 @@ public partial class App : Application
         
         // Register State Machine Services
         services.AddSingleton<AnswerStateMachineFactory>();
+        services.AddSingleton<QuestionEditorFactory>();
         
         // Register Caching Services
         services.AddMemoryCache();
