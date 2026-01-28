@@ -36,6 +36,14 @@ You are an expert WPF + WinUI 3 developer tasked with building a production-read
 - ❌ Response Analysis Endpoints - Phase 5 blocked
 - 📄 **See BACKEND_API_REQUIREMENTS.md** for complete list of missing APIs and specifications
 
+**🎨 UI MODERNIZATION PLAN**: Parallel UI/UX overhaul in progress - **SEPARATE from functionality**:
+- 🔄 Migrating from ModernWPF to WPF UI (https://wpfui.lepo.co/)
+- ✨ Modern Fluent Design 2.0 aesthetics (Windows 11 native)
+- 📊 Improved usability with card layouts, breadcrumbs, InfoBars
+- 🚫 **CRITICAL**: UI changes are isolated - NO business logic modifications
+- 📄 **See UI_MIGRATION_PLAN.md** for complete migration strategy and timeline
+- ⏱️ Estimated: 2-3 weeks (runs parallel to backend API implementation)
+
 CRITICAL: You MUST read and strictly follow the complete technical documentation located at:
 \FRONTEND_TECHNICAL_DOCUMENTATION.md
 

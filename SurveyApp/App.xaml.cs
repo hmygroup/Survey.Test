@@ -124,6 +124,12 @@ public partial class App : Application
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        services.AddHttpClient<ConstraintService>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
         // Register Infrastructure Services
         services.AddSingleton<NavigationService>();
         services.AddSingleton<DialogService>();
@@ -149,6 +155,7 @@ public partial class App : Application
         services.AddTransient<QuestionDialogViewModel>();
         services.AddTransient<ConstraintEditorViewModel>();
         services.AddTransient<ResponseFormViewModel>();
+        services.AddTransient<AnswerAnalysisViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
@@ -158,6 +165,7 @@ public partial class App : Application
         services.AddTransient<QuestionEditorView>();
         services.AddTransient<QuestionDialogWindow>();
         services.AddTransient<ResponseFormView>();
+        services.AddTransient<AnswerAnalysisView>();
 
         // Add Logging
         services.AddLogging(builder =>

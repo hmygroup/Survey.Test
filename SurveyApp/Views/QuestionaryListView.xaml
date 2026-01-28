@@ -84,6 +84,17 @@
                     <TextBlock Text="View Details" />
                 </StackPanel>
             </Button>
+            <Button Command="{Binding ViewResponsesCommand}"
+                   IsEnabled="{Binding SelectedQuestionary, Converter={StaticResource NullToBooleanConverter}}"
+                   ToolTip="View responses and analysis"
+                   Style="{StaticResource AccentButtonStyle}"
+                   Padding="10,6"
+                   Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <ui:FontIcon Glyph="&#xE8F1;" FontSize="14" Margin="0,0,6,0" />
+                    <TextBlock Text="View Responses" />
+                </StackPanel>
+            </Button>
             <Button Command="{Binding EditQuestionaryCommand}"
                    IsEnabled="{Binding SelectedQuestionary, Converter={StaticResource NullToBooleanConverter}}"
                    ToolTip="Edit questionnaire"
