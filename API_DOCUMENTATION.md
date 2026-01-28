@@ -51,9 +51,9 @@ All API endpoints require the `connection` parameter set to `10001` to identify 
 
 ## Questionary Endpoints
 
-### 1. Get All Questionnaries
+### 1. Get All Questionnaires
 
-Retrieves all questionnaries from the system.
+Retrieves all questionnaires from the system.
 
 **Endpoint**: `GET /api/questionary/10001/all`
 

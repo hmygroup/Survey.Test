@@ -402,7 +402,7 @@ A comprehensive API documentation file has been created at `/API_DOCUMENTATION.m
 
 2. **Organized by Resource Type**:
    - ✅ Questionary Endpoints (5 endpoints)
-     - Get all questionnaries
+     - Get all questionnaires
      - Get by ID
      - Get by name
      - Get full questionary with questions
