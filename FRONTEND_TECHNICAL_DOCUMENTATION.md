@@ -2231,7 +2231,7 @@ Include comprehensive XML documentation, follow C# naming conventions (PascalCas
 You are an expert WPF + WinUI 3 developer tasked with building a production-ready questionnaire management system.
 
 CRITICAL: You MUST read and strictly follow the complete technical documentation located at:
-c:\HMYNET\repos\Hmy.Web.Common.Services.Survey\FRONTEND_TECHNICAL_DOCUMENTATION.md
+\FRONTEND_TECHNICAL_DOCUMENTATION.md
 
 This file contains ALL specifications including API endpoints, data models, UI/UX rules, validation patterns, and architectural decisions. Refer to it constantly.
 
