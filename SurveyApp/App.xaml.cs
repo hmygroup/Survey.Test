@@ -125,6 +125,9 @@ public partial class App : Application
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
         
+        // Register State Machine Services
+        services.AddSingleton<AnswerStateMachineFactory>();
+        
         // Register Caching Services
         services.AddMemoryCache();
         services.AddSingleton<GraphCacheService>();
