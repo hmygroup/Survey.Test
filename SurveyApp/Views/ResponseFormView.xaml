@@ -5,11 +5,133 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       xmlns:vm="clr-namespace:SurveyApp.ViewModels"
+      xmlns:selectors="clr-namespace:SurveyApp.Views.Selectors"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:ResponseFormViewModel}"
       d:DesignHeight="600"
       d:DesignWidth="800"
       Title="Response Form">
+
+    <Page.Resources>
+        <!-- Question Input Selector -->
+        <selectors:QuestionInputSelector x:Key="QuestionInputSelector">
+            <!-- Text Template (Default) -->
+            <selectors:QuestionInputSelector.TextTemplate>
+                <DataTemplate>
+                    <TextBox x:Name="ResponseTextBox"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             MinHeight="100"
+                             MaxHeight="300"
+                             ui:ControlHelper.PlaceholderText="Enter your response here..."
+                             Tag="{Binding}" />
+                </DataTemplate>
+            </selectors:QuestionInputSelector.TextTemplate>
+
+            <!-- Boolean Template -->
+            <selectors:QuestionInputSelector.BooleanTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <CheckBox x:Name="BooleanInput"
+                                  Content="Yes"
+                                  FontSize="16"
+                                  Margin="0,8"
+                                  Tag="{Binding}" />
+                        <TextBlock Text="Check the box to indicate 'Yes', or leave unchecked for 'No'."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </selectors:QuestionInputSelector.BooleanTemplate>
+
+            <!-- Integer Template -->
+            <selectors:QuestionInputSelector.IntegerTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <ui:NumberBox x:Name="IntegerInput"
+                                      SpinButtonPlacementMode="Inline"
+                                      Minimum="0"
+                                      Maximum="1000000"
+                                      SmallChange="1"
+                                      LargeChange="10"
+                                      ui:ControlHelper.PlaceholderText="Enter a whole number..."
+                                      Tag="{Binding}" />
+                        <TextBlock Text="Enter a whole number (integer)."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </selectors:QuestionInputSelector.IntegerTemplate>
+
+            <!-- Decimal Template -->
+            <selectors:QuestionInputSelector.DecimalTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <ui:NumberBox x:Name="DecimalInput"
+                                      SpinButtonPlacementMode="Inline"
+                                      Minimum="0"
+                                      Maximum="1000000"
+                                      SmallChange="0.1"
+                                      LargeChange="1.0"
+                                      ui:ControlHelper.PlaceholderText="Enter a decimal number..."
+                                      Tag="{Binding}" />
+                        <TextBlock Text="Enter a decimal number (e.g., 3.14)."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </selectors:QuestionInputSelector.DecimalTemplate>
+
+            <!-- Date Template -->
+            <selectors:QuestionInputSelector.DateTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <DatePicker x:Name="DateInput"
+                                    HorizontalAlignment="Left"
+                                    Width="250"
+                                    Tag="{Binding}" />
+                        <TextBlock Text="Select a date from the calendar."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </selectors:QuestionInputSelector.DateTemplate>
+
+            <!-- Rating Template -->
+            <selectors:QuestionInputSelector.RatingTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Slider x:Name="RatingSlider"
+                                Minimum="1"
+                                Maximum="5"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                TickPlacement="BottomRight"
+                                Width="300"
+                                HorizontalAlignment="Left"
+                                Margin="0,8"
+                                Tag="{Binding}" />
+                        <TextBlock FontSize="14"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,8,0,0">
+                            <Run Text="Rating:" />
+                            <Run Text="{Binding ElementName=RatingSlider, Path=Value, Mode=OneWay}" FontWeight="SemiBold" />
+                            <Run Text="/ 5" />
+                        </TextBlock>
+                        <TextBlock Text="Slide to rate from 1 (lowest) to 5 (highest)."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </selectors:QuestionInputSelector.RatingTemplate>
+        </selectors:QuestionInputSelector>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -103,14 +225,9 @@
                         Padding="12"
                         Visibility="{Binding CurrentQuestion, Converter={StaticResource NullToVisibilityConverter}}">
                     <StackPanel>
-                        <!-- Text Input (default for all types for now) -->
-                        <TextBox x:Name="ResponseTextBox"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap"
-                                 VerticalScrollBarVisibility="Auto"
-                                 MinHeight="100"
-                                 MaxHeight="300"
-                                 ui:ControlHelper.PlaceholderText="Enter your response here..." />
+                        <!-- Type-specific Input Control -->
+                        <ContentControl Content="{Binding CurrentQuestion}"
+                                        ContentTemplateSelector="{StaticResource QuestionInputSelector}" />
 
                         <!-- Helper Text -->
                         <TextBlock FontSize="11"
