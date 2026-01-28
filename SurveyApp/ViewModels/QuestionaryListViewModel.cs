@@ -8,6 +8,7 @@ public partial class QuestionaryListViewModel : ObservableObject
 {
     private readonly QuestionaryService _questionaryService;
     private readonly DialogService _dialogService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<QuestionaryListViewModel> _logger;
 
     [ObservableProperty]
@@ -31,10 +32,12 @@ public partial class QuestionaryListViewModel : ObservableObject
     public QuestionaryListViewModel(
         QuestionaryService questionaryService,
         DialogService dialogService,
+        IServiceProvider serviceProvider,
         ILogger<QuestionaryListViewModel> logger)
     {
         _questionaryService = questionaryService;
         _dialogService = dialogService;
+        _serviceProvider = serviceProvider;
         _logger = logger;
     }
 
@@ -117,8 +120,51 @@ public partial class QuestionaryListViewModel : ObservableObject
     private async Task CreateQuestionaryAsync()
     {
         _logger.LogInformation("Create questionary command invoked");
-        // TODO: Implement create dialog
-        await _dialogService.ShowMessageAsync("Info", "Create questionary dialog will be implemented in the next step");
+
+        try
+        {
+            var dialog = _serviceProvider.GetRequiredService<QuestionaryDialogWindow>();
+            var dialogViewModel = (QuestionaryDialogViewModel)dialog.DataContext;
+            dialogViewModel.ConfigureForCreate();
+
+            var result = dialog.ShowDialog();
+            
+            if (result == true && dialog.IsConfirmed)
+            {
+                var questionaryData = dialog.GetQuestionaryData();
+                var name = questionaryData.name;
+                var description = questionaryData.description;
+                
+                IsLoading = true;
+                StatusMessage = $"Creating '{name}'...";
+                _logger.LogInformation("Creating questionary: {Name}", name);
+
+                var newQuestionary = await _questionaryService.CreateAsync(name);
+                
+                if (newQuestionary != null)
+                {
+                    await _dialogService.ShowMessageAsync("Success", $"Questionnaire '{name}' created successfully");
+                    _logger.LogInformation("Successfully created questionary: {Id}", newQuestionary.Id);
+                    
+                    // Reload the list
+                    await LoadQuestionnairesAsync();
+                }
+                else
+                {
+                    await _dialogService.ShowErrorAsync("Error", "Failed to create questionnaire - no response from server");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating questionary");
+            StatusMessage = $"Error creating questionary: {ex.Message}";
+            await _dialogService.ShowErrorAsync("Error", $"Failed to create questionnaire: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     /// <summary>
@@ -130,8 +176,49 @@ public partial class QuestionaryListViewModel : ObservableObject
         if (SelectedQuestionary == null) return;
 
         _logger.LogInformation("Edit questionary: {Id}", SelectedQuestionary.Id);
-        // TODO: Implement edit dialog
-        await _dialogService.ShowMessageAsync("Info", $"Edit dialog for '{SelectedQuestionary.Name}' will be implemented in the next step");
+        
+        // Note: The API doesn't have an update endpoint yet, so we'll show a message
+        await _dialogService.ShowMessageAsync("Info", 
+            "Edit functionality requires an Update endpoint in the API.\n" +
+            "This will be implemented when the backend provides PUT /api/questionary/{connectionId}/{id} endpoint.");
+        
+        /* When API supports update, use this code:
+        try
+        {
+            var dialog = _serviceProvider.GetRequiredService<QuestionaryDialogWindow>();
+            var dialogViewModel = (QuestionaryDialogViewModel)dialog.DataContext;
+            dialogViewModel.ConfigureForEdit(SelectedQuestionary);
+
+            var result = dialog.ShowDialog();
+            
+            if (result == true && dialog.IsConfirmed)
+            {
+                var (name, description) = dialog.GetQuestionaryData();
+                
+                IsLoading = true;
+                StatusMessage = $"Updating '{name}'...";
+                _logger.LogInformation("Updating questionary: {Id}", SelectedQuestionary.Id);
+
+                await _questionaryService.UpdateAsync(SelectedQuestionary.Id, name, description);
+                
+                await _dialogService.ShowMessageAsync("Success", $"Questionnaire '{name}' updated successfully");
+                _logger.LogInformation("Successfully updated questionary: {Id}", SelectedQuestionary.Id);
+                
+                // Reload the list
+                await LoadQuestionnairesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating questionary: {Id}", SelectedQuestionary.Id);
+            StatusMessage = $"Error updating questionary: {ex.Message}";
+            await _dialogService.ShowErrorAsync("Error", $"Failed to update questionnaire: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+        */
     }
 
     /// <summary>

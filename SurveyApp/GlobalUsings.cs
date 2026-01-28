@@ -27,3 +27,4 @@ global using SurveyApp.Services.Api;
 global using SurveyApp.Services.Infrastructure;
 global using SurveyApp.ViewModels;
 global using SurveyApp.Views;
+global using SurveyApp.Views.Dialogs;
