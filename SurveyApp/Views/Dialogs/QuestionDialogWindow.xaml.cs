@@ -1,3 +1,5 @@
+using SurveyApp.Services.Infrastructure;
+
 namespace SurveyApp.Views.Dialogs;
 
 /// <summary>
@@ -7,12 +9,12 @@ public partial class QuestionDialogWindow : Window
 {
     private readonly QuestionDialogViewModel _viewModel;
     private readonly ConstraintEditorViewModel _constraintEditorViewModel;
-    private readonly QuestionEditorFactory _editorFactory;
+    private readonly SurveyApp.Services.Infrastructure.QuestionEditorFactory _editorFactory;
 
     public QuestionDialogWindow(
         QuestionDialogViewModel viewModel,
         ConstraintEditorViewModel constraintEditorViewModel,
-        QuestionEditorFactory editorFactory)
+        SurveyApp.Services.Infrastructure.QuestionEditorFactory editorFactory)
     {
         InitializeComponent();
         _viewModel = viewModel;

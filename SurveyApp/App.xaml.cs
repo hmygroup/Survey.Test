@@ -124,13 +124,13 @@ public partial class App : Application
         services.AddSingleton<NavigationService>();
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
-        services.AddSingleton<QuestionEditorFactory>();
+        services.AddSingleton<SurveyApp.Services.Infrastructure.QuestionEditorFactory>();
         services.AddTransient<ReactiveValidationService>();
         services.AddSingleton<CommandHistoryManager>();
         
         // Register State Machine Services
         services.AddSingleton<AnswerStateMachineFactory>();
-        services.AddSingleton<QuestionEditorFactory>();
+        services.AddSingleton<SurveyApp.Services.Factories.QuestionEditorFactory>();
         
         // Register Caching Services
         services.AddMemoryCache();

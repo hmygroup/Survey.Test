@@ -31,6 +31,7 @@ global using SurveyApp.Services.Caching;
 global using SurveyApp.Services.Factories;
 global using SurveyApp.Services.Infrastructure;
 global using SurveyApp.Services.Infrastructure.Commands;
+global using SurveyApp.Services.StateMachine;
 global using SurveyApp.ViewModels;
 global using SurveyApp.Views;
 global using SurveyApp.Views.Dialogs;

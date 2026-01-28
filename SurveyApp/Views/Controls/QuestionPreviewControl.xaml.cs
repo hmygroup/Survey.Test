@@ -1,3 +1,5 @@
+using SurveyApp.Services.Infrastructure;
+
 namespace SurveyApp.Views.Controls;
 
 /// <summary>
@@ -5,7 +7,7 @@ namespace SurveyApp.Views.Controls;
 /// </summary>
 public partial class QuestionPreviewControl : UserControl
 {
-    private QuestionEditorFactory _editorFactory;
+    private SurveyApp.Services.Infrastructure.QuestionEditorFactory _editorFactory;
     private string _currentQuestionType = "System.String";
     private IEnumerable<ConstraintDto>? _currentConstraints;
 
@@ -15,8 +17,8 @@ public partial class QuestionPreviewControl : UserControl
         
         // Note: Factory will be injected when the control is added to the dialog
         // For now, create a temporary instance with basic logging
-        _editorFactory = new QuestionEditorFactory(
-            new Microsoft.Extensions.Logging.Abstractions.NullLogger<QuestionEditorFactory>());
+        _editorFactory = new SurveyApp.Services.Infrastructure.QuestionEditorFactory(
+            new Microsoft.Extensions.Logging.Abstractions.NullLogger<SurveyApp.Services.Infrastructure.QuestionEditorFactory>());
         
         // Initialize with default preview
         UpdatePreview();
@@ -25,7 +27,7 @@ public partial class QuestionPreviewControl : UserControl
     /// <summary>
     /// Sets the editor factory (for dependency injection).
     /// </summary>
-    public void SetEditorFactory(QuestionEditorFactory factory)
+    public void SetEditorFactory(SurveyApp.Services.Infrastructure.QuestionEditorFactory factory)
     {
         _editorFactory = factory;
         UpdatePreview();
@@ -61,7 +63,7 @@ public partial class QuestionPreviewControl : UserControl
     private void UpdatePreview()
     {
         // Update type description
-        PreviewTypeDescription.Text = $"Type: {QuestionEditorFactory.GetTypeDisplayName(_currentQuestionType)} - {QuestionEditorFactory.GetTypeDescription(_currentQuestionType)}";
+        PreviewTypeDescription.Text = $"Type: {SurveyApp.Services.Infrastructure.QuestionEditorFactory.GetTypeDisplayName(_currentQuestionType)} - {SurveyApp.Services.Infrastructure.QuestionEditorFactory.GetTypeDescription(_currentQuestionType)}";
 
         // Create and display the appropriate editor
         try
