@@ -2,12 +2,22 @@ namespace SurveyApp.Services.Api;
 
 /// <summary>
 /// Service for managing answer sessions via the API.
+/// Integrates with AnswerStateMachine for state management.
 /// </summary>
 public class AnswerService : ApiService
 {
-    public AnswerService(HttpClient httpClient, ILogger<AnswerService> logger) 
+    private readonly ILogger<AnswerService> _answerLogger;
+    private readonly AnswerStateMachineFactory _stateMachineFactory;
+    private readonly Dictionary<Guid, AnswerStateMachine> _stateMachines = new();
+
+    public AnswerService(
+        HttpClient httpClient, 
+        ILogger<AnswerService> logger,
+        AnswerStateMachineFactory stateMachineFactory) 
         : base(httpClient, logger)
     {
+        _answerLogger = logger;
+        _stateMachineFactory = stateMachineFactory;
     }
 
     /// <summary>
@@ -20,10 +30,76 @@ public class AnswerService : ApiService
         CancellationToken cancellationToken = default)
     {
         var encodedUser = Uri.EscapeDataString(user);
-        return await PostAsync<object, AnswerDto>(
+        var answer = await PostAsync<object, AnswerDto>(
             $"Answer/{ConnectionId}?questionaryId={questionaryId}&user={encodedUser}&cardId={cardId}",
             new { },
             cancellationToken);
+
+        // Initialize state machine for this answer
+        if (answer != null)
+        {
+            var stateMachine = _stateMachineFactory.Create(
+                answer.Id,
+                answer.AnswerStatus?.AnswerStatus ?? AnswerStatus.Unfinished,
+                user);
+            _stateMachines[answer.Id] = stateMachine;
+            
+            _answerLogger.LogInformation("Created Answer {AnswerId} with state machine in {State}", 
+                answer.Id, stateMachine.CurrentState);
+        }
+
+        return answer;
+    }
+
+    /// <summary>
+    /// Gets or creates a state machine for an answer.
+    /// </summary>
+    public AnswerStateMachine GetStateMachine(Guid answerId, AnswerStatus currentState, string? user = null)
+    {
+        if (!_stateMachines.TryGetValue(answerId, out var stateMachine))
+        {
+            stateMachine = _stateMachineFactory.Create(answerId, currentState, user);
+            _stateMachines[answerId] = stateMachine;
+        }
+        return stateMachine;
+    }
+
+    /// <summary>
+    /// Transitions an answer to a new state using the state machine.
+    /// </summary>
+    public async Task<bool> TransitionStateAsync(
+        Guid answerId,
+        AnswerTrigger trigger,
+        AnswerStatus currentState,
+        string? user = null,
+        string? notes = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var stateMachine = GetStateMachine(answerId, currentState, user);
+
+            // Attempt the transition
+            if (!stateMachine.Fire(trigger, notes))
+            {
+                _answerLogger.LogWarning("State transition failed for Answer {AnswerId}: {Trigger} from {State}",
+                    answerId, trigger, currentState);
+                return false;
+            }
+
+            // Update the status via API
+            var newStatus = stateMachine.CurrentState;
+            await SetStatusAsync(new[] { answerId }, newStatus, cancellationToken);
+
+            _answerLogger.LogInformation("Answer {AnswerId} transitioned to {NewState} via {Trigger}",
+                answerId, newStatus, trigger);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _answerLogger.LogError(ex, "Error transitioning state for Answer {AnswerId}", answerId);
+            return false;
+        }
     }
 
     /// <summary>
@@ -70,5 +146,15 @@ public class AnswerService : ApiService
         return await GetAsync<IEnumerable<AnswerDto>>(
             $"Answer/{ConnectionId}/questionary/{questionaryId}",
             cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the state transition history for an answer.
+    /// </summary>
+    public IReadOnlyList<StateTransitionHistory>? GetStateHistory(Guid answerId)
+    {
+        return _stateMachines.TryGetValue(answerId, out var stateMachine) 
+            ? stateMachine.History 
+            : null;
     }
 }

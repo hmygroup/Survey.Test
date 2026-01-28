@@ -128,6 +128,10 @@ public partial class App : Application
         services.AddTransient<ReactiveValidationService>();
         services.AddSingleton<CommandHistoryManager>();
         
+        // Register State Machine Services
+        services.AddSingleton<AnswerStateMachineFactory>();
+        services.AddSingleton<QuestionEditorFactory>();
+        
         // Register Caching Services
         services.AddMemoryCache();
         services.AddSingleton<GraphCacheService>();
@@ -147,6 +151,7 @@ public partial class App : Application
         services.AddTransient<QuestionaryDialogWindow>();
         services.AddTransient<QuestionEditorView>();
         services.AddTransient<QuestionDialogWindow>();
+        services.AddTransient<ResponseFormView>();
 
         // Add Logging
         services.AddLogging(builder =>

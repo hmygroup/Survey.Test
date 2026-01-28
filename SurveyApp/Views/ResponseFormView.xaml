@@ -1,0 +1,203 @@
+<Page x:Class="SurveyApp.Views.ResponseFormView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:vm="clr-namespace:SurveyApp.ViewModels"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance Type=vm:ResponseFormViewModel}"
+      d:DesignHeight="600"
+      d:DesignWidth="800"
+      Title="Response Form">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                Padding="24,16">
+            <StackPanel>
+                <TextBlock Text="Survey Response"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Foreground="White" />
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="14"
+                           Foreground="White"
+                           Opacity="0.9"
+                           Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Progress Bar -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="24,12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           FontSize="12"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                           Margin="0,0,0,4">
+                    <Run Text="Progress:" />
+                    <Run Text="{Binding ProgressPercentage, Mode=OneWay}" />
+                    <Run Text="%" />
+                    <Run Text="(" />
+                    <Run Text="{Binding Responses.Count, Mode=OneWay}" />
+                    <Run Text="of" />
+                    <Run Text="{Binding Questions.Count, Mode=OneWay}" />
+                    <Run Text="answered)" />
+                </TextBlock>
+
+                <ProgressBar Grid.Row="1"
+                             Value="{Binding ProgressPercentage, Mode=OneWay}"
+                             Maximum="100"
+                             Height="8"
+                             IsIndeterminate="{Binding IsLoading}" />
+            </Grid>
+        </Border>
+
+        <!-- Question Content -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="24">
+            <StackPanel>
+                <!-- Question Text -->
+                <TextBlock Text="{Binding CurrentQuestion.QuestionText}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,24"
+                           Visibility="{Binding CurrentQuestion, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                <!-- Question Type Badge -->
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        Padding="8,4"
+                        CornerRadius="4"
+                        HorizontalAlignment="Left"
+                        Margin="0,0,0,16"
+                        Visibility="{Binding CurrentQuestion, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock FontSize="11"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                        <Run Text="Type:" />
+                        <Run Text="{Binding CurrentQuestion.QuestionType.DotNetType, Mode=OneWay}" FontWeight="SemiBold" />
+                    </TextBlock>
+                </Border>
+
+                <!-- Response Input (Type-specific) -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="12"
+                        Visibility="{Binding CurrentQuestion, Converter={StaticResource NullToVisibilityConverter}}">
+                    <StackPanel>
+                        <!-- Text Input (default for all types for now) -->
+                        <TextBox x:Name="ResponseTextBox"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 MinHeight="100"
+                                 MaxHeight="300"
+                                 ui:ControlHelper.PlaceholderText="Enter your response here..." />
+
+                        <!-- Helper Text -->
+                        <TextBlock FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap">
+                            <Run Text="Press Next to save and continue, or Previous to go back." />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Empty State -->
+                <TextBlock Text="No questions available"
+                           FontSize="16"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0,48,0,0"
+                           Visibility="{Binding Questions.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverse}" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Navigation Buttons -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="24,16"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Content="← Previous"
+                        Command="{Binding PreviousQuestionCommand}"
+                        Padding="24,8"
+                        MinWidth="120" />
+
+                <TextBlock Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                    <Run Text="Question" />
+                    <Run Text="{Binding CurrentQuestionIndex, Converter={StaticResource AddOneConverter}, Mode=OneWay}" FontWeight="SemiBold" />
+                    <Run Text="of" />
+                    <Run Text="{Binding Questions.Count, Mode=OneWay}" FontWeight="SemiBold" />
+                </TextBlock>
+
+                <Button Grid.Column="2"
+                        Content="Next →"
+                        Command="{Binding NextQuestionCommand}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Padding="24,8"
+                        MinWidth="120"
+                        Margin="0,0,8,0" />
+
+                <Button Grid.Column="3"
+                        Content="Submit Survey"
+                        Command="{Binding SubmitCommand}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Padding="24,8"
+                        MinWidth="140"
+                        Visibility="{Binding HasNextQuestion, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}" />
+            </Grid>
+        </Border>
+
+        <!-- Loading Overlay -->
+        <Border Grid.Row="0"
+                Grid.RowSpan="5"
+                Background="#80000000"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <ui:ProgressRing Width="64"
+                                 Height="64"
+                                 IsActive="True" />
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="White"
+                           FontSize="16"
+                           Margin="0,16,0,0"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
