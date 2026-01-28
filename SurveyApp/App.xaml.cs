@@ -112,6 +112,10 @@ public partial class App : Application
         services.AddSingleton<NavigationService>();
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
+        
+        // Register Caching Services
+        services.AddMemoryCache();
+        services.AddSingleton<GraphCacheService>();
 
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();

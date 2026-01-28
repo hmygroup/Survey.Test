@@ -24,6 +24,7 @@ global using SurveyApp.Converters;
 global using SurveyApp.Models.Dtos;
 global using SurveyApp.Models.Enums;
 global using SurveyApp.Services.Api;
+global using SurveyApp.Services.Caching;
 global using SurveyApp.Services.Infrastructure;
 global using SurveyApp.ViewModels;
 global using SurveyApp.Views;

@@ -104,8 +104,8 @@ public partial class QuestionaryListViewModel : ObservableObject
         var searchLower = SearchText.ToLowerInvariant();
         var filtered = Questionnaires.Where(q =>
             q.Name.ToLowerInvariant().Contains(searchLower) ||
-            q.Description.ToLowerInvariant().Contains(searchLower) ||
-            q.CreatedBy.ToLowerInvariant().Contains(searchLower)
+            (q.Description?.ToLowerInvariant().Contains(searchLower) ?? false) ||
+            (q.CreatedBy?.ToLowerInvariant().Contains(searchLower) ?? false)
         ).ToList();
 
         FilteredQuestionnaires = new ObservableCollection<QuestionaryDto>(filtered);

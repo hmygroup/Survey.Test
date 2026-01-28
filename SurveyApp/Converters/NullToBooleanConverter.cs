@@ -2,6 +2,7 @@ namespace SurveyApp.Converters;
 
 /// <summary>
 /// Converts null values to boolean (null = false, not null = true).
+/// Supports only OneWay binding from source to target.
 /// </summary>
 public class NullToBooleanConverter : IValueConverter
 {
@@ -12,6 +13,7 @@ public class NullToBooleanConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        // This converter only supports OneWay binding
+        throw new NotSupportedException("NullToBooleanConverter only supports OneWay binding.");
     }
 }
