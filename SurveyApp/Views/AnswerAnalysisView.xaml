@@ -42,10 +42,10 @@
                                Margin="0,4,0,0" />
                 </StackPanel>
 
-                <Button Grid.Column="1"
+                <ui:Button Grid.Column="1"
                         Content="← Back to List"
                         Command="{Binding NavigateBackCommand}"
-                        Style="{StaticResource AccentButtonStyle}"
+                        Appearance="Primary"
                         Padding="16,8" />
             </Grid>
         </Border>
@@ -216,9 +216,9 @@
 
                 <!-- Filter Buttons -->
                 <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
-                    <Button Content="Apply"
+                    <ui:Button Content="Apply"
                             Command="{Binding ApplyFiltersCommand}"
-                            Style="{StaticResource AccentButtonStyle}"
+                            Appearance="Primary"
                             Padding="24,8"
                             Margin="0,0,8,0" />
                     <Button Content="Clear"
@@ -294,9 +294,9 @@
                             Command="{Binding RefreshCommand}"
                             Padding="16,8"
                             Margin="0,0,8,0" />
-                    <Button Content="📊 Export to CSV"
+                    <ui:Button Content="📊 Export to CSV"
                             Command="{Binding ExportToCsvCommand}"
-                            Style="{StaticResource AccentButtonStyle}"
+                            Appearance="Primary"
                             Padding="16,8" />
                 </StackPanel>
 
@@ -321,9 +321,9 @@
                             Command="{Binding PreviousPageCommand}"
                             Padding="16,8"
                             Margin="0,0,8,0" />
-                    <Button Content="Next →"
+                    <ui:Button Content="Next →"
                             Command="{Binding NextPageCommand}"
-                            Style="{StaticResource AccentButtonStyle}"
+                            Appearance="Primary"
                             Padding="16,8" />
                 </StackPanel>
             </Grid>

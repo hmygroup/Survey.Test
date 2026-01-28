@@ -1,4 +1,4 @@
-<Window x:Class="SurveyApp.MainWindow"
+<ui:FluentWindow x:Class="SurveyApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,27 +12,102 @@
         Width="1280"
         MinHeight="600"
         MinWidth="1000"
-        WindowStartupLocation="CenterScreen">
-    
+        WindowStartupLocation="CenterScreen"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica"
+        WindowCornerPreference="Round">
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <!-- Navigation Pane -->
-        <StackPanel Grid.Column="0" 
-                   Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                   Margin="12">
-            <Button Content="Home" Margin="0,0,0,8" />
-            <Button Content="Questionnaires" Margin="0,0,0,8" />
-            <Button Content="Responses" Margin="0,0,0,8" />
-        </StackPanel>
+        <!-- Title Bar -->
+        <ui:TitleBar Grid.Row="0"
+                     Title="{Binding Title}"
+                     ShowMaximize="True"
+                     ShowMinimize="True"
+                     ShowClose="True" />
 
-        <!-- Content Frame -->
-        <Frame x:Name="ContentFrame" 
-               Grid.Column="1"
-               NavigationUIVisibility="Hidden"
-               Margin="0" />
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Navigation Menu -->
+            <Border Grid.Column="0"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="0,0,1,0">
+                <StackPanel Margin="12">
+                    <!-- Home Button -->
+                    <ui:Button Command="{Binding NavigateToHomeCommand}"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,0,8"
+                              Appearance="Secondary">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="Home20" />
+                        </ui:Button.Icon>
+                        <ui:Button.Content>
+                            <TextBlock Text="Home" Margin="8,0,0,0" />
+                        </ui:Button.Content>
+                    </ui:Button>
+
+                    <!-- Questionnaires Button -->
+                    <ui:Button Command="{Binding NavigateToQuestionnairesCommand}"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,0,8"
+                              Appearance="Secondary">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="DocumentBulletList20" />
+                        </ui:Button.Icon>
+                        <ui:Button.Content>
+                            <TextBlock Text="Questionnaires" Margin="8,0,0,0" />
+                        </ui:Button.Content>
+                    </ui:Button>
+
+                    <!-- Responses Button -->
+                    <ui:Button Command="{Binding NavigateToResponsesCommand}"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,0,8"
+                              Appearance="Secondary">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="DataUsage20" />
+                        </ui:Button.Icon>
+                        <ui:Button.Content>
+                            <TextBlock Text="Responses" Margin="8,0,0,0" />
+                        </ui:Button.Content>
+                    </ui:Button>
+
+                    <!-- Spacer -->
+                    <Border Height="1" />
+
+                    <!-- Toggle Theme Button (at bottom) -->
+                    <ui:Button Command="{Binding ToggleThemeCommand}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom"
+                              Margin="0,12,0,0"
+                              Appearance="Secondary">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="WeatherMoon20" />
+                        </ui:Button.Icon>
+                        <ui:Button.Content>
+                            <TextBlock Text="Toggle Theme" Margin="8,0,0,0" />
+                        </ui:Button.Content>
+                    </ui:Button>
+                </StackPanel>
+            </Border>
+
+            <!-- Content Frame -->
+            <Border Grid.Column="1"
+                    Background="{DynamicResource ApplicationBackgroundBrush}">
+                <Frame x:Name="ContentFrame"
+                       NavigationUIVisibility="Hidden"
+                       Margin="16" />
+            </Border>
+        </Grid>
     </Grid>
-</Window>
+</ui:FluentWindow>

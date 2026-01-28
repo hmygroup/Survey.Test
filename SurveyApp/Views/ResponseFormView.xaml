@@ -281,18 +281,18 @@
                     <Run Text="{Binding Questions.Count, Mode=OneWay}" FontWeight="SemiBold" />
                 </TextBlock>
 
-                <Button Grid.Column="2"
+                <ui:Button Grid.Column="2"
                         Content="Next →"
                         Command="{Binding NextQuestionCommand}"
-                        Style="{StaticResource AccentButtonStyle}"
+                        Appearance="Primary"
                         Padding="24,8"
                         MinWidth="120"
                         Margin="0,0,8,0" />
 
-                <Button Grid.Column="3"
+                <ui:Button Grid.Column="3"
                         Content="Submit Survey"
                         Command="{Binding SubmitCommand}"
-                        Style="{StaticResource AccentButtonStyle}"
+                        Appearance="Primary"
                         Padding="24,8"
                         MinWidth="140"
                         Visibility="{Binding HasNextQuestion, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}" />

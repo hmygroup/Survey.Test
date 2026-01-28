@@ -144,11 +144,11 @@
                    MinWidth="100"
                    Margin="0,0,8,0" />
 
-            <Button Grid.Column="2"
+            <ui:Button Grid.Column="2"
                    Content="{Binding SaveButtonText}"
                    IsDefault="True"
                    Click="SaveButton_Click"
-                   Style="{StaticResource AccentButtonStyle}"
+                   Appearance="Primary"
                    Padding="24,8"
                    MinWidth="100"
                    IsEnabled="{Binding CanSave}" />

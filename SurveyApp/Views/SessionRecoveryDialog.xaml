@@ -77,11 +77,11 @@
                     Margin="0,0,10,0"
                     ToolTip="Keep the saved session but create a new one"/>
             
-            <Button x:Name="ContinueButton"
+            <ui:Button x:Name="ContinueButton"
                     Content="Continue"
                     Click="ContinueButton_Click"
                     Width="100"
-                    Style="{StaticResource AccentButtonStyle}"
+                    Appearance="Primary"
                     ToolTip="Resume from where you left off"/>
         </StackPanel>
     </Grid>

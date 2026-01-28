@@ -43,10 +43,10 @@
                           DisplayMemberPath="Name" Height="32"
                           Margin="0,0,8,0" />
 
-                <Button Grid.Column="1"
+                <ui:Button Grid.Column="1"
                         Content="Add Constraint"
                         Command="{Binding AddConstraintCommand}"
-                        Style="{StaticResource AccentButtonStyle}"
+                        Appearance="Primary"
                         Padding="16,6"
                         Height="32" />
             </Grid>
@@ -165,10 +165,10 @@
                                       Text="{Binding NewPolicyRecordValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28"
                                       Margin="0,0,4,0" />
 
-                            <Button Grid.Column="1"
+                            <ui:Button Grid.Column="1"
                                     Content="+"
                                     Command="{Binding AddPolicyRecordCommand}"
-                                    Style="{StaticResource AccentButtonStyle}"
+                                    Appearance="Primary"
                                     Padding="12,4"
                                     Height="28"
                                     FontSize="16"
