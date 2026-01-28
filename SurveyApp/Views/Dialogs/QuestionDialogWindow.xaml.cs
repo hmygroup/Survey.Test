@@ -7,18 +7,39 @@ public partial class QuestionDialogWindow : Window
 {
     private readonly QuestionDialogViewModel _viewModel;
     private readonly ConstraintEditorViewModel _constraintEditorViewModel;
+    private readonly QuestionEditorFactory _editorFactory;
 
     public QuestionDialogWindow(
         QuestionDialogViewModel viewModel,
-        ConstraintEditorViewModel constraintEditorViewModel)
+        ConstraintEditorViewModel constraintEditorViewModel,
+        QuestionEditorFactory editorFactory)
     {
         InitializeComponent();
         _viewModel = viewModel;
         _constraintEditorViewModel = constraintEditorViewModel;
+        _editorFactory = editorFactory;
         DataContext = _viewModel;
         
         // Set the constraint editor's DataContext
         ConstraintEditor.DataContext = _constraintEditorViewModel;
+        
+        // Inject the factory into the preview control
+        QuestionPreview.SetEditorFactory(_editorFactory);
+        
+        // Wire up preview updates
+        _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(_viewModel.QuestionText))
+        {
+            QuestionPreview.UpdateQuestionText(_viewModel.QuestionText);
+        }
+        else if (e.PropertyName == nameof(_viewModel.SelectedQuestionType))
+        {
+            QuestionPreview.UpdateQuestionType(_viewModel.SelectedQuestionType, _viewModel.Constraints);
+        }
     }
 
     /// <summary>

@@ -6,6 +6,7 @@ namespace SurveyApp.ViewModels;
 public partial class QuestionDialogViewModel : ObservableObject
 {
     private readonly ILogger<QuestionDialogViewModel> _logger;
+    private readonly ReactiveValidationService? _validationService;
 
     [ObservableProperty]
     private string _title = "Question";
@@ -30,6 +31,9 @@ public partial class QuestionDialogViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _hasValidationError;
+    
+    [ObservableProperty]
+    private bool _hasValidationWarning;
 
     [ObservableProperty]
     private bool _canSave = true;
@@ -57,9 +61,12 @@ public partial class QuestionDialogViewModel : ObservableObject
         "System.Byte[]",        // Binary/File
     };
 
-    public QuestionDialogViewModel(ILogger<QuestionDialogViewModel> logger)
+    public QuestionDialogViewModel(
+        ILogger<QuestionDialogViewModel> logger,
+        ReactiveValidationService? validationService = null)
     {
         _logger = logger;
+        _validationService = validationService;
     }
 
     /// <summary>
@@ -145,5 +152,39 @@ public partial class QuestionDialogViewModel : ObservableObject
     public (string questionText, string questionType, ICollection<ConstraintDto> constraints) GetQuestionData()
     {
         return (QuestionText.Trim(), SelectedQuestionType, Constraints);
+    }
+
+    /// <summary>
+    /// Updates validation feedback based on a validation result.
+    /// </summary>
+    public void UpdateValidationFeedback(QuestionValidationResult result)
+    {
+        ValidationMessage = result.Message;
+        
+        switch (result.Severity)
+        {
+            case ValidationSeverity.Error:
+                HasValidationError = true;
+                HasValidationWarning = false;
+                CanSave = false;
+                break;
+            
+            case ValidationSeverity.Warning:
+                HasValidationError = false;
+                HasValidationWarning = true;
+                CanSave = true; // Allow save with warnings
+                break;
+            
+            case ValidationSeverity.Info:
+            case ValidationSeverity.None:
+            default:
+                HasValidationError = false;
+                HasValidationWarning = false;
+                CanSave = true;
+                break;
+        }
+        
+        _logger.LogDebug("Validation feedback updated: {Severity} - {Message}", 
+            result.Severity, result.Message);
     }
 }
