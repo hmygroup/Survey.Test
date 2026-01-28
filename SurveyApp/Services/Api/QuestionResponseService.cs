@@ -18,7 +18,7 @@ public class QuestionResponseService : ApiService
         CancellationToken cancellationToken = default)
     {
         return await PostAsync<IEnumerable<object>, IEnumerable<QuestionResponseDto>>(
-            $"questionresponse/{ConnectionId}/response",
+            $"QuestionResponse/{ConnectionId}/response",
             responses,
             cancellationToken);
     }
@@ -28,12 +28,21 @@ public class QuestionResponseService : ApiService
     /// </summary>
     public async Task<QuestionResponseDto?> UpdateResponseAsync(
         Guid questionResponseId,
-        string response,
+        string newValue,
+        string? metadata = null,
         CancellationToken cancellationToken = default)
     {
-        var encodedResponse = Uri.EscapeDataString(response);
+        var encodedNewValue = Uri.EscapeDataString(newValue);
+        var url = $"QuestionResponse/{ConnectionId}/response?QuestionResponseID={questionResponseId}&newValue={encodedNewValue}";
+        
+        if (!string.IsNullOrEmpty(metadata))
+        {
+            var encodedMetadata = Uri.EscapeDataString(metadata);
+            url += $"&metadata={encodedMetadata}";
+        }
+        
         return await PatchAsync<object, QuestionResponseDto>(
-            $"questionresponse/{ConnectionId}/response?questionResponseId={questionResponseId}&response={encodedResponse}",
+            url,
             new { },
             cancellationToken);
     }
@@ -45,8 +54,22 @@ public class QuestionResponseService : ApiService
         Guid answerId,
         CancellationToken cancellationToken = default)
     {
+        // Note: This endpoint is not documented in the API
+        // This method may not work until the API provides the endpoint
         return await GetAsync<IEnumerable<QuestionResponseDto>>(
-            $"questionresponse/{ConnectionId}/answer/{answerId}",
+            $"QuestionResponse/{ConnectionId}/answer/{answerId}",
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Deletes a specific question response.
+    /// </summary>
+    public async Task DeleteResponseAsync(
+        Guid questionResponseId,
+        CancellationToken cancellationToken = default)
+    {
+        await DeleteAsync(
+            $"QuestionResponse/{ConnectionId}/response/{questionResponseId}",
             cancellationToken);
     }
 }

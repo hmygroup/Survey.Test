@@ -45,7 +45,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void NavigateToHome()
     {
         _logger.LogInformation("Navigating to Home");
-        // TODO: Implement Home view when created
+        _navigationService.NavigateTo<HomeView>();
     }
 
     /// <summary>

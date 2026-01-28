@@ -18,7 +18,7 @@ A modern, production-ready WPF application for managing questionnaires and surve
 - **.NET 8.0 SDK** or later ([Download](https://dotnet.microsoft.com/download/dotnet/8.0))
 - **Windows 10** version 1809+ or **Windows 11**
 - **Visual Studio 2022** (recommended) or **Visual Studio Code** with C# extension
-- **Backend API** running at `http://localhost:5030/api/`
+- **Backend API** running at `http://localhost:5049/api/` with Connection ID `10001`
 
 ## 🛠️ Setup Instructions
 
@@ -136,7 +136,8 @@ SurveyApp/
 
 The application connects to the backend API at:
 ```
-Base URL: http://localhost:5030/api/
+Base URL: http://localhost:5049/api/
+Connection ID: 10001
 ```
 
 The default connection ID is set to `1`. You can modify this in the `ApiService.ConnectionId` property.
@@ -204,7 +205,7 @@ Copyright © 2026 Survey Enterprise
 
 ### Application won't start
 - Ensure .NET 8.0 SDK is installed: `dotnet --version`
-- Check that the backend API is running at `http://localhost:5030/api/`
+- Check that the backend API is running at `http://localhost:5049/api/`
 - Review logs in `%APPDATA%\SurveyApp\Logs\`
 
 ### Theme not switching
@@ -212,7 +213,7 @@ Copyright © 2026 Survey Enterprise
 - Restart the application
 
 ### API connection errors
-- Verify backend is running: `curl http://localhost:5030/api/`
+- Verify backend is running: `curl http://localhost:5049/api/`
 - Check connection ID in `ApiService.ConnectionId`
 - Review network logs in Serilog output
 

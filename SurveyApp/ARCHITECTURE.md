@@ -121,7 +121,7 @@ QuestionaryService
                   │
 ┌─────────────────▼───────────────────────────┐
 │         Backend REST API                    │
-│    http://localhost:5030/api/              │
+│    http://localhost:5049/api/              │
 └─────────────────────────────────────────────┘
 ```
 
@@ -253,7 +253,7 @@ POST /api/question/new/1?questionaryId={id}
 ```csharp
 services.AddHttpClient<QuestionaryService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5030/api/");
+    client.BaseAddress = new Uri("http://localhost:5049/api/");
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 ```

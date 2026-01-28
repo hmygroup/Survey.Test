@@ -18,7 +18,7 @@ public class QuestionService : ApiService
         CancellationToken cancellationToken = default)
     {
         return await GetAsync<IEnumerable<QuestionDto>>(
-            $"question/{ConnectionId}/questionary/{questionaryId}", 
+            $"Question/{ConnectionId}/get?questionaryId={questionaryId}", 
             cancellationToken);
     }
 
@@ -31,7 +31,7 @@ public class QuestionService : ApiService
         CancellationToken cancellationToken = default)
     {
         return await PostAsync<IEnumerable<object>, IEnumerable<QuestionDto>>(
-            $"question/new/{ConnectionId}?questionaryId={questionaryId}",
+            $"Question/new/{ConnectionId}?questionaryId={questionaryId}",
             questions,
             cancellationToken);
     }
@@ -41,6 +41,8 @@ public class QuestionService : ApiService
     /// </summary>
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync($"question/{ConnectionId}/{id}", cancellationToken);
+        // Note: DELETE endpoint for Question is not documented in the API
+        // This method may not work until the API provides the endpoint
+        await DeleteAsync($"Question/{ConnectionId}/{id}", cancellationToken);
     }
 }

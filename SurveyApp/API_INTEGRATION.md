@@ -4,7 +4,8 @@ This document describes how the Survey Management System integrates with the bac
 
 ## Base Configuration
 
-**API Base URL**: `http://localhost:5030/api/`
+**API Base URL**: `http://localhost:5049/api/`
+**Connection ID**: `10001`
 
 All API services inherit from `ApiService` which provides common HTTP methods and automatic JSON serialization/deserialization.
 
@@ -20,7 +21,7 @@ var questionaryService = serviceProvider.GetRequiredService<QuestionaryService>(
 questionaryService.ConnectionId = 1; // Set to your database connection ID
 ```
 
-The default connection ID is `1`.
+The default connection ID is `10001`.
 
 ## Available Services
 
@@ -31,31 +32,32 @@ Manages questionnaires (surveys).
 #### Get All Questionnaires
 ```csharp
 var questionnaries = await questionaryService.GetAllAsync();
-// GET /api/questionary/{connection}/all
+// GET /api/Questionary/10001/all
 ```
 
 #### Get Single Questionnaire
 ```csharp
 var questionary = await questionaryService.GetByIdAsync(questionaryId);
-// GET /api/questionary/{connection}/{id}
+// GET /api/Questionary/10001/{id}
 ```
 
 #### Get Full Questionnaire (with Questions)
 ```csharp
 var fullQuestionary = await questionaryService.GetFullAsync(questionaryId);
-// GET /api/questionary/{connection}/{id}/full
+// GET /api/Questionary/10001/{id}/full
 ```
 
 #### Create Questionnaire
 ```csharp
 var newQuestionary = await questionaryService.CreateAsync("Customer Satisfaction Survey");
-// POST /api/questionary/{connection}/New/{name}
+// POST /api/Questionary/10001/New/{name}
 ```
 
 #### Delete Questionnaire
 ```csharp
+// Note: DELETE endpoint not documented in API specification
 await questionaryService.DeleteAsync(questionaryId);
-// DELETE /api/questionary/{connection}/{id}
+// DELETE /api/Questionary/10001/{id} (may not be available)
 ```
 
 ### 2. QuestionService
@@ -65,7 +67,7 @@ Manages questions within questionnaires.
 #### Get Questions by Questionnaire
 ```csharp
 var questions = await questionService.GetByQuestionaryIdAsync(questionaryId);
-// GET /api/question/{connection}/questionary/{questionaryId}
+// GET /api/Question/10001/get?questionaryId={questionaryId}
 ```
 
 #### Create Questions
@@ -77,13 +79,14 @@ var newQuestions = new[]
 };
 
 var created = await questionService.CreateAsync(questionaryId, newQuestions);
-// POST /api/question/new/{connection}?questionaryId={id}
+// POST /api/Question/new/10001?questionaryId={id}
 ```
 
 #### Delete Question
 ```csharp
+// Note: DELETE endpoint not documented in API specification
 await questionService.DeleteAsync(questionId);
-// DELETE /api/question/{connection}/{id}
+// DELETE /api/Question/10001/{id} (may not be available)
 ```
 
 ### 3. AnswerService
@@ -97,22 +100,29 @@ var answer = await answerService.CreateAsync(
     user: "john.doe@company.com",
     cardId: 12345
 );
-// POST /api/answer/{connection}?questionaryId={id}&user={email}&cardId={cardId}
+// POST /api/Answer/10001?questionaryId={id}&user={email}&cardId={cardId}
 // Returns: AnswerDto with Id to use for saving responses
+```
+
+#### Get Answer by ID
+```csharp
+var answer = await answerService.GetByIdAsync(answerId);
+// GET /api/Answer/10001/{id}
 ```
 
 #### Update Answer Status
 ```csharp
 var answerIds = new[] { answerId1, answerId2 };
 await answerService.SetStatusAsync(answerIds, AnswerStatus.Completed);
-// PUT /api/answer/setStatus
+// PUT /api/Answer/setStatus
 // Body: { answersId: ["guid1", "guid2"], ANSWER_STATUS: "COMPLETED" }
 ```
 
 #### Get Answers by Questionnaire
 ```csharp
+// Note: This endpoint is not documented in API specification
 var answers = await answerService.GetByQuestionaryIdAsync(questionaryId);
-// GET /api/answer/{connection}/questionary/{questionaryId}
+// GET /api/Answer/10001/questionary/{questionaryId} (may not be available)
 ```
 
 ### 4. QuestionResponseService
@@ -128,22 +138,65 @@ var responses = new[]
 };
 
 var saved = await questionResponseService.SaveResponsesAsync(responses);
-// POST /api/questionresponse/{connection}/response
+// POST /api/QuestionResponse/10001/response
 ```
 
 #### Update Single Response
 ```csharp
 var updated = await questionResponseService.UpdateResponseAsync(
     questionResponseId: responseId,
-    response: "Updated answer"
+    newValue: "Updated answer",
+    metadata: "{\"source\":\"manual_edit\"}"
 );
-// PATCH /api/questionresponse/{connection}/response?questionResponseId={id}&response={value}
+// PATCH /api/QuestionResponse/10001/response?QuestionResponseID={id}&newValue={value}&metadata={data}
+```
+
+#### Delete Response
+```csharp
+await questionResponseService.DeleteResponseAsync(questionResponseId);
+// DELETE /api/QuestionResponse/10001/response/{questionResponseId}
 ```
 
 #### Get Responses by Answer Session
 ```csharp
+// Note: This endpoint is not documented in API specification
 var responses = await questionResponseService.GetByAnswerIdAsync(answerId);
-// GET /api/questionresponse/{connection}/answer/{answerId}
+// GET /api/QuestionResponse/10001/answer/{answerId} (may not be available)
+```
+
+### 5. QuestionTypeService
+
+Manages question types (data types for questions).
+
+#### Get All Question Types
+```csharp
+var questionTypes = await questionTypeService.GetAllAsync();
+// GET /api/QuestionType/10001/all
+```
+
+#### Get Question Type by ID
+```csharp
+var questionType = await questionTypeService.GetByIdAsync(questionTypeId);
+// GET /api/QuestionType/10001/{id}
+```
+
+#### Add New Question Type
+```csharp
+var newType = await questionTypeService.AddAsync(
+    name: "Integer",
+    dotNetType: "System.Int32"
+);
+// POST /api/QuestionType/10001/Add?name={name}&dotNetType={dotNetType}
+```
+
+### 6. PolicyService
+
+Manages validation policies and constraints.
+
+#### Get All Policies
+```csharp
+var policies = await policyService.GetAllAsync();
+// GET /api/Policy/10001/all
 ```
 
 ## Complete Survey Workflow
@@ -346,7 +399,7 @@ services.AddHttpClient<QuestionaryService>(client =>
 ```csharp
 services.AddHttpClient<QuestionaryService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5030/api/");
+    client.BaseAddress = new Uri("http://localhost:5049/api/");
     client.DefaultRequestHeaders.Add("Authorization", "Bearer YOUR_TOKEN");
 });
 ```
@@ -402,7 +455,7 @@ services.AddHttpClient<QuestionaryService>()
 ## Troubleshooting
 
 ### API not responding
-- Check if backend is running: `curl http://localhost:5030/api/`
+- Check if backend is running: `curl http://localhost:5049/api/`
 - Verify firewall settings
 - Check logs in `%APPDATA%/SurveyApp/Logs/`
 

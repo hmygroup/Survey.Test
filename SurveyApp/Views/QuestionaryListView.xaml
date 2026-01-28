@@ -66,14 +66,9 @@
                           PlaceholderText="Search questionnaires by name, description, or creator..."
                           Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           QueryIcon="Find"
-                          Margin="0,0,0,16">
-            <ui:AutoSuggestBox.Style>
-                <Style TargetType="ui:AutoSuggestBox" BasedOn="{StaticResource DefaultAutoSuggestBoxStyle}">
-                    <Setter Property="Width" Value="400" />
-                    <Setter Property="HorizontalAlignment" Value="Left" />
-                </Style>
-            </ui:AutoSuggestBox.Style>
-        </ui:AutoSuggestBox>
+                          Width="400"
+                          HorizontalAlignment="Left"
+                          Margin="0,0,0,16" />
 
         <!-- Action Bar -->
         <StackPanel Grid.Row="2" 

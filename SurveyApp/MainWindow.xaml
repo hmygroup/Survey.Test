@@ -85,49 +85,7 @@
 
             <!-- Content Frame -->
             <Frame x:Name="ContentFrame" 
-                   NavigationUIVisibility="Hidden">
-                <Frame.Content>
-                    <Grid>
-                        <StackPanel VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center">
-                            <TextBlock Text="Welcome to Survey Management System" 
-                                      FontSize="28" 
-                                      FontWeight="SemiBold"
-                                      TextAlignment="Center"
-                                      Margin="0,0,0,16" />
-                            <TextBlock Text="Select an option from the menu to get started" 
-                                      FontSize="16" 
-                                      TextAlignment="Center"
-                                      Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                            <StackPanel Orientation="Horizontal" 
-                                       HorizontalAlignment="Center"
-                                       Margin="0,32,0,0">
-                                <ui:SimpleStackPanel Spacing="8" Margin="0,0,16,0">
-                                    <TextBlock Text="📊" FontSize="32" TextAlignment="Center" />
-                                    <TextBlock Text="Create Questionnaires" FontWeight="SemiBold" />
-                                    <TextBlock Text="Design custom surveys" 
-                                             TextAlignment="Center"
-                                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                                </ui:SimpleStackPanel>
-                                <ui:SimpleStackPanel Spacing="8" Margin="16,0">
-                                    <TextBlock Text="✏️" FontSize="32" TextAlignment="Center" />
-                                    <TextBlock Text="Collect Responses" FontWeight="SemiBold" />
-                                    <TextBlock Text="Gather user feedback" 
-                                             TextAlignment="Center"
-                                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                                </ui:SimpleStackPanel>
-                                <ui:SimpleStackPanel Spacing="8" Margin="16,0,0,0">
-                                    <TextBlock Text="📈" FontSize="32" TextAlignment="Center" />
-                                    <TextBlock Text="Analyze Results" FontWeight="SemiBold" />
-                                    <TextBlock Text="View insights" 
-                                             TextAlignment="Center"
-                                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                                </ui:SimpleStackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Frame.Content>
-            </Frame>
+                   NavigationUIVisibility="Hidden" />
 
         </ui:NavigationView>
     </Grid>

@@ -5,7 +5,8 @@
 **Fecha:** Enero 2026  
 **Framework:** WPF + WinUI  
 **Patrón:** MVVM + CQRS (Backend)  
-**API Base:** `http://localhost:5030/api/`
+**API Base:** `http://localhost:5049/api/`  
+**Connection ID:** `10001`
 
 ---
 
@@ -702,7 +703,12 @@ HMY.Web.Common.Services.Survey
 
 ### 🔗 URL Base API
 ```
-http://localhost:5030/api/
+http://localhost:5049/api/
+```
+
+### 🆔 Connection ID
+```
+10001
 ```
 
 ### 📊 Modelo de Datos Principal
@@ -723,6 +729,8 @@ Questionary (Cuestionario)
 
 ### 🔑 Parámetro Connection
 **CRÍTICO:** Todos los endpoints requieren el parámetro `connection` (int) que identifica la base de datos a usar.
+
+**Connection ID por defecto:** `10001`
 
 ---
 
@@ -1064,7 +1072,8 @@ ViewModelMessenger.Subscribe("QuestionaryCreated", (obj) =>
 ### 📡 Configuración Base
 
 ```
-Base URL: http://localhost:5030/api/
+Base URL: http://localhost:5049/api/
+Connection ID: 10001
 Auth: (sin autenticación en dev, agregar si es requerido)
 Content-Type: application/json
 ```
@@ -1073,7 +1082,7 @@ Content-Type: application/json
 
 #### 1. Obtener Cuestionario por ID
 ```http
-GET /api/questionary/{connection}/{id}
+GET /api/Questionary/{connection}/{id}
 
 Parámetros:
   connection: int (identificador de BD)
@@ -1091,7 +1100,7 @@ Response: QuestionaryDto
 
 #### 2. Crear Cuestionario
 ```http
-POST /api/questionary/{connection}/New/{name}
+POST /api/Questionary/{connection}/New/{name}
 
 Parámetros:
   connection: int
@@ -1102,7 +1111,7 @@ Response: QuestionaryDto (mismo como arriba)
 
 #### 3. Obtener por Nombre
 ```http
-GET /api/questionary/{connection}/name/{name}
+GET /api/Questionary/{connection}/name/{name}
 
 Parámetros:
   connection: int
@@ -2150,7 +2159,7 @@ Esta documentación proporciona una guía integral para desarrollar un frontend 
 ```
 Create a modern WPF application with WinUI 3 for managing questionnaires (surveys/forms) similar to Google Forms but for enterprise use. 
 
-The application should connect to an existing REST API at http://localhost:5030/api/ that implements a Clean Architecture backend with CQRS pattern. All API calls require a "connection" parameter (int) to identify the database tenant.
+The application should connect to an existing REST API at http://localhost:5049/api/ that implements a Clean Architecture backend with CQRS pattern. All API calls require a "connection" parameter (int) to identify the database tenant (default: 10001).
 
 Architecture Requirements:
 - Use MVVM pattern with CommunityToolkit.Mvvm

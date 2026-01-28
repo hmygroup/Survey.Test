@@ -70,6 +70,28 @@ public class NavigationService
     }
 
     /// <summary>
+    /// Navigates to a specific page instance.
+    /// </summary>
+    public void NavigateToInstance(Page page)
+    {
+        if (_navigationFrame == null)
+        {
+            _logger.LogWarning("Navigation frame not set");
+            return;
+        }
+
+        try
+        {
+            _navigationFrame.Navigate(page);
+            _logger.LogInformation("Navigated to {PageType} instance", page.GetType().Name);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error navigating to {PageType} instance", page.GetType().Name);
+        }
+    }
+
+    /// <summary>
     /// Navigates back if possible.
     /// </summary>
     public void GoBack()

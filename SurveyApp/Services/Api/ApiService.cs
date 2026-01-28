@@ -12,7 +12,7 @@ public class ApiService
     /// <summary>
     /// Gets or sets the current connection ID for multi-tenant database access.
     /// </summary>
-    public int ConnectionId { get; set; } = 1;
+    public int ConnectionId { get; set; } = 10001;
 
     public ApiService(HttpClient httpClient, ILogger<ApiService> logger)
     {

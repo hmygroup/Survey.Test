@@ -16,7 +16,7 @@ public class QuestionaryService : ApiService
     public async Task<IEnumerable<QuestionaryDto>?> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await GetAsync<IEnumerable<QuestionaryDto>>(
-            $"questionary/{ConnectionId}/all", 
+            $"Questionary/{ConnectionId}/all", 
             cancellationToken);
     }
 
@@ -26,7 +26,7 @@ public class QuestionaryService : ApiService
     public async Task<QuestionaryDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await GetAsync<QuestionaryDto>(
-            $"questionary/{ConnectionId}/{id}", 
+            $"Questionary/{ConnectionId}/{id}", 
             cancellationToken);
     }
 
@@ -36,7 +36,7 @@ public class QuestionaryService : ApiService
     public async Task<FullQuestionaryDto?> GetFullAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await GetAsync<FullQuestionaryDto>(
-            $"questionary/{ConnectionId}/{id}/full", 
+            $"Questionary/{ConnectionId}/{id}/full", 
             cancellationToken);
     }
 
@@ -47,7 +47,7 @@ public class QuestionaryService : ApiService
     {
         var encodedName = Uri.EscapeDataString(name);
         return await PostAsync<object, QuestionaryDto>(
-            $"questionary/{ConnectionId}/New/{encodedName}", 
+            $"Questionary/{ConnectionId}/New/{encodedName}", 
             new { }, 
             cancellationToken);
     }
@@ -57,6 +57,6 @@ public class QuestionaryService : ApiService
     /// </summary>
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await DeleteAsync($"questionary/{ConnectionId}/{id}", cancellationToken);
+        await DeleteAsync($"Questionary/{ConnectionId}/{id}", cancellationToken);
     }
 }

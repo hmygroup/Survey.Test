@@ -8,6 +8,7 @@ public partial class QuestionaryListViewModel : ObservableObject
 {
     private readonly QuestionaryService _questionaryService;
     private readonly DialogService _dialogService;
+    private readonly NavigationService _navigationService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<QuestionaryListViewModel> _logger;
 
@@ -32,11 +33,13 @@ public partial class QuestionaryListViewModel : ObservableObject
     public QuestionaryListViewModel(
         QuestionaryService questionaryService,
         DialogService dialogService,
+        NavigationService navigationService,
         IServiceProvider serviceProvider,
         ILogger<QuestionaryListViewModel> logger)
     {
         _questionaryService = questionaryService;
         _dialogService = dialogService;
+        _navigationService = navigationService;
         _serviceProvider = serviceProvider;
         _logger = logger;
     }
@@ -277,6 +280,7 @@ public partial class QuestionaryListViewModel : ObservableObject
 
     /// <summary>
     /// Views details of the selected questionnaire.
+    /// Opens the Question Editor for managing questions.
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
     private async Task ViewDetailsAsync()
@@ -285,31 +289,23 @@ public partial class QuestionaryListViewModel : ObservableObject
 
         try
         {
-            IsLoading = true;
-            StatusMessage = "Loading questionnaire details...";
-            _logger.LogInformation("Loading full details for questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogInformation("Opening question editor for questionary: {Id}", SelectedQuestionary.Id);
 
-            var fullQuestionary = await _questionaryService.GetFullAsync(SelectedQuestionary.Id);
+            // Get the QuestionEditorView from DI
+            var questionEditorView = _serviceProvider.GetRequiredService<QuestionEditorView>();
             
-            if (fullQuestionary != null)
-            {
-                var questionCount = fullQuestionary.Questions?.Count() ?? 0;
-                await _dialogService.ShowMessageAsync(
-                    fullQuestionary.Name,
-                    $"Description: {fullQuestionary.Description}\n\n" +
-                    $"Questions: {questionCount}");
-                _logger.LogInformation("Displayed details for questionary: {Id}", SelectedQuestionary.Id);
-            }
+            // Initialize it with the current questionary
+            await questionEditorView.InitializeAsync(SelectedQuestionary);
+            
+            // Navigate to the initialized editor instance
+            _navigationService.NavigateToInstance(questionEditorView);
+            
+            _logger.LogInformation("Navigated to question editor for questionary: {Id}", SelectedQuestionary.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading questionary details: {Id}", SelectedQuestionary.Id);
-            await _dialogService.ShowErrorAsync("Error", $"Failed to load questionary details: {ex.Message}");
-        }
-        finally
-        {
-            IsLoading = false;
-            StatusMessage = string.Empty;
+            _logger.LogError(ex, "Error opening question editor: {Id}", SelectedQuestionary.Id);
+            await _dialogService.ShowErrorAsync("Error", $"Failed to open question editor: {ex.Message}");
         }
     }
 

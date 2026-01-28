@@ -21,7 +21,7 @@ public class AnswerService : ApiService
     {
         var encodedUser = Uri.EscapeDataString(user);
         return await PostAsync<object, AnswerDto>(
-            $"answer/{ConnectionId}?questionaryId={questionaryId}&user={encodedUser}&cardId={cardId}",
+            $"Answer/{ConnectionId}?questionaryId={questionaryId}&user={encodedUser}&cardId={cardId}",
             new { },
             cancellationToken);
     }
@@ -40,9 +40,21 @@ public class AnswerService : ApiService
             ANSWER_STATUS = status.ToString().ToUpper()
         };
 
-        await PostAsync(
-            $"answer/setStatus",
+        await PutAsync<object, object>(
+            $"Answer/setStatus",
             request,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Retrieves a specific answer by ID.
+    /// </summary>
+    public async Task<AnswerDto?> GetByIdAsync(
+        Guid answerId,
+        CancellationToken cancellationToken = default)
+    {
+        return await GetAsync<AnswerDto>(
+            $"Answer/{ConnectionId}/{answerId}",
             cancellationToken);
     }
 
@@ -53,8 +65,10 @@ public class AnswerService : ApiService
         Guid questionaryId,
         CancellationToken cancellationToken = default)
     {
+        // Note: This endpoint is not documented in the API
+        // This method may not work until the API provides the endpoint
         return await GetAsync<IEnumerable<AnswerDto>>(
-            $"answer/{ConnectionId}/questionary/{questionaryId}",
+            $"Answer/{ConnectionId}/questionary/{questionaryId}",
             cancellationToken);
     }
 }

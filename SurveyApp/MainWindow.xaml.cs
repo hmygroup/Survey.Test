@@ -19,6 +19,9 @@ public partial class MainWindow : Window
         
         // Set the navigation frame
         _navigationService.SetNavigationFrame(ContentFrame);
+        
+        // Navigate to Home view on startup
+        _navigationService.NavigateTo<HomeView>();
     }
 
     private void NavigationView_SelectionChanged(ModernWpf.Controls.NavigationView sender, ModernWpf.Controls.NavigationViewSelectionChangedEventArgs args)

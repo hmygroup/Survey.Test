@@ -1,0 +1,141 @@
+namespace SurveyApp.ViewModels;
+
+/// <summary>
+/// ViewModel for the Question dialog (Create/Edit).
+/// </summary>
+public partial class QuestionDialogViewModel : ObservableObject
+{
+    private readonly ILogger<QuestionDialogViewModel> _logger;
+
+    [ObservableProperty]
+    private string _title = "Question";
+
+    [ObservableProperty]
+    private string _headerText = "Create Question";
+
+    [ObservableProperty]
+    private string _subHeaderText = "Fill in the details below";
+
+    [ObservableProperty]
+    private string _saveButtonText = "Create";
+
+    [ObservableProperty]
+    private string _questionText = string.Empty;
+
+    [ObservableProperty]
+    private string _selectedQuestionType = "System.String";
+
+    [ObservableProperty]
+    private string _validationMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasValidationError;
+
+    [ObservableProperty]
+    private bool _canSave = true;
+
+    public Guid? QuestionId { get; set; }
+    public Guid QuestionaryId { get; set; }
+
+    /// <summary>
+    /// Available question types based on .NET types.
+    /// </summary>
+    public ObservableCollection<string> QuestionTypes { get; } = new()
+    {
+        "System.String",        // Text
+        "System.Boolean",       // Yes/No
+        "System.Int32",         // Integer
+        "System.Decimal",       // Decimal
+        "System.DateTime",      // Date/Time
+        "System.Double",        // Double
+        "System.Guid",          // Unique Identifier
+        "System.Byte[]",        // Binary/File
+    };
+
+    public QuestionDialogViewModel(ILogger<QuestionDialogViewModel> logger)
+    {
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Configures the dialog for creating a new question.
+    /// </summary>
+    public void ConfigureForCreate(Guid questionaryId)
+    {
+        Title = "Create Question";
+        HeaderText = "Create New Question";
+        SubHeaderText = "Fill in the question details below";
+        SaveButtonText = "Create";
+        QuestionId = null;
+        QuestionaryId = questionaryId;
+        QuestionText = string.Empty;
+        SelectedQuestionType = "System.String";
+        _logger.LogInformation("Dialog configured for Create mode for questionary {QuestionaryId}", questionaryId);
+    }
+
+    /// <summary>
+    /// Configures the dialog for editing an existing question.
+    /// </summary>
+    public void ConfigureForEdit(QuestionDto question)
+    {
+        Title = "Edit Question";
+        HeaderText = "Edit Question";
+        SubHeaderText = "Update the question details below";
+        SaveButtonText = "Save";
+        QuestionId = question.Id;
+        QuestionText = question.QuestionText;
+        SelectedQuestionType = question.QuestionType?.DotNetType ?? "System.String";
+        _logger.LogInformation("Dialog configured for Edit mode: {Id}", question.Id);
+    }
+
+    /// <summary>
+    /// Validates the question text when it changes.
+    /// </summary>
+    partial void OnQuestionTextChanged(string value)
+    {
+        ValidateQuestionText();
+    }
+
+    /// <summary>
+    /// Validates the question text.
+    /// </summary>
+    public bool ValidateQuestionText()
+    {
+        if (string.IsNullOrWhiteSpace(QuestionText))
+        {
+            ValidationMessage = "Question text is required";
+            HasValidationError = true;
+            CanSave = false;
+            return false;
+        }
+
+        if (QuestionText.Length < 5)
+        {
+            ValidationMessage = "Question text must be at least 5 characters";
+            HasValidationError = true;
+            CanSave = false;
+            return false;
+        }
+
+        if (QuestionText.Length > 500)
+        {
+            ValidationMessage = "Question text must not exceed 500 characters";
+            HasValidationError = true;
+            CanSave = false;
+            return false;
+        }
+
+        ValidationMessage = string.Empty;
+        HasValidationError = false;
+        CanSave = true;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the question data for saving.
+    /// </summary>
+    public (string questionText, string questionType) GetQuestionData()
+    {
+        return (QuestionText.Trim(), SelectedQuestionType);
+    }
+}

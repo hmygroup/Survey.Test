@@ -79,32 +79,44 @@ public partial class App : Application
         // Configure HttpClient for API
         services.AddHttpClient<ApiService>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5030/api/");
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
         // Register API Services
         services.AddHttpClient<QuestionaryService>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5030/api/");
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
         services.AddHttpClient<QuestionService>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5030/api/");
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
         services.AddHttpClient<AnswerService>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5030/api/");
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
         services.AddHttpClient<QuestionResponseService>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5030/api/");
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
+        services.AddHttpClient<QuestionTypeService>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
+        services.AddHttpClient<PolicyService>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5049/api/");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
@@ -121,11 +133,16 @@ public partial class App : Application
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<QuestionaryListViewModel>();
         services.AddTransient<QuestionaryDialogViewModel>();
+        services.AddTransient<QuestionEditorViewModel>();
+        services.AddTransient<QuestionDialogViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
+        services.AddTransient<HomeView>();
         services.AddTransient<QuestionaryListView>();
         services.AddTransient<QuestionaryDialogWindow>();
+        services.AddTransient<QuestionEditorView>();
+        services.AddTransient<QuestionDialogWindow>();
 
         // Add Logging
         services.AddLogging(builder =>
