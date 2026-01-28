@@ -125,12 +125,15 @@ public partial class QuestionEditorViewModel : ObservableObject
             var dialogViewModel = (QuestionDialogViewModel)dialog.DataContext;
             dialogViewModel.ConfigureForCreate(CurrentQuestionary.Id);
 
+            // Initialize constraint editor
+            await dialog.InitializeConstraintEditorAsync();
+
             dialog.Owner = Application.Current.MainWindow;
             var result = dialog.ShowDialog();
 
             if (result == true && dialog.IsConfirmed)
             {
-                var (questionText, questionType) = dialog.GetQuestionData();
+                var (questionText, questionType, constraints) = dialog.GetQuestionData();
 
                 IsLoading = true;
                 StatusMessage = "Creating question...";
@@ -199,12 +202,15 @@ public partial class QuestionEditorViewModel : ObservableObject
             var dialogViewModel = (QuestionDialogViewModel)dialog.DataContext;
             dialogViewModel.ConfigureForEdit(SelectedQuestion);
 
+            // Initialize constraint editor with existing constraints
+            await dialog.InitializeConstraintEditorAsync();
+
             dialog.Owner = Application.Current.MainWindow;
             var result = dialog.ShowDialog();
 
             if (result == true && dialog.IsConfirmed)
             {
-                var (questionText, questionType) = dialog.GetQuestionData();
+                var (questionText, questionType, constraints) = dialog.GetQuestionData();
 
                 // Update the question in the collection
                 var index = Questions.IndexOf(SelectedQuestion);
@@ -218,7 +224,8 @@ public partial class QuestionEditorViewModel : ObservableObject
                         {
                             Id = SelectedQuestion.QuestionType?.Id ?? Guid.NewGuid(),
                             DotNetType = questionType
-                        }
+                        },
+                        Constraints = constraints.ToList()
                     };
 
                     Questions[index] = updatedQuestion;

@@ -5,16 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:vm="clr-namespace:SurveyApp.ViewModels"
+        xmlns:controls="clr-namespace:SurveyApp.Views.Controls"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:QuestionDialogViewModel}"
         ui:WindowHelper.UseModernWindowStyle="True"
         Title="{Binding Title}"
-        Height="450"
-        Width="650"
-        MinHeight="400"
-        MinWidth="550"
+        Height="750"
+        Width="900"
+        MinHeight="650"
+        MinWidth="800"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ResizeMode="CanResize">
     
     <Grid Margin="24">
         <Grid.RowDefinitions>
@@ -91,6 +92,10 @@
                     </TextBlock>
                 </StackPanel>
             </Border>
+
+            <!-- Constraint Editor -->
+            <controls:ConstraintEditorView x:Name="ConstraintEditor"
+                                          Margin="0,0,0,16" />
 
             <!-- Validation Message -->
             <TextBlock Text="{Binding ValidationMessage}"
