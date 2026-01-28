@@ -9,7 +9,9 @@ public partial class ResponseFormViewModel : ObservableObject
     private readonly QuestionService _questionService;
     private readonly QuestionResponseService _questionResponseService;
     private readonly AnswerService _answerService;
+    private readonly SessionManager _sessionManager;
     private readonly ILogger<ResponseFormViewModel> _logger;
+    private string _questionaryTitle = string.Empty;
 
     [ObservableProperty]
     private ObservableCollection<QuestionDto> _questions = new();
@@ -49,24 +51,27 @@ public partial class ResponseFormViewModel : ObservableObject
         QuestionService questionService,
         QuestionResponseService questionResponseService,
         AnswerService answerService,
+        SessionManager sessionManager,
         ILogger<ResponseFormViewModel> logger)
     {
         _questionService = questionService;
         _questionResponseService = questionResponseService;
         _answerService = answerService;
+        _sessionManager = sessionManager;
         _logger = logger;
     }
 
     /// <summary>
     /// Initializes the form with an Answer session.
     /// </summary>
-    public async Task InitializeAsync(AnswerDto answer)
+    public async Task InitializeAsync(AnswerDto answer, string questionaryTitle = "")
     {
         try
         {
             IsLoading = true;
             StatusMessage = "Loading questions...";
             CurrentAnswer = answer;
+            _questionaryTitle = questionaryTitle;
 
             // Load questions for the questionary
             var questions = await _questionService.GetByQuestionaryIdAsync(answer.QuestionaryId);
@@ -78,6 +83,9 @@ public partial class ResponseFormViewModel : ObservableObject
                 
                 UpdateProgressPercentage();
                 StatusMessage = $"Question 1 of {Questions.Count}";
+                
+                // Start auto-save
+                _sessionManager.StartAutoSave(GetCurrentCheckpoint);
                 
                 _logger.LogInformation("Loaded {Count} questions for Answer {AnswerId}", 
                     Questions.Count, answer.Id);
@@ -232,5 +240,75 @@ public partial class ResponseFormViewModel : ObservableObject
 
         var answeredCount = Responses.Count;
         ProgressPercentage = (int)((double)answeredCount / Questions.Count * 100);
+    }
+
+    /// <summary>
+    /// Gets the current session checkpoint.
+    /// </summary>
+    private Task<SessionCheckpoint?> GetCurrentCheckpoint()
+    {
+        if (CurrentAnswer == null)
+            return Task.FromResult<SessionCheckpoint?>(null);
+
+        var checkpoint = new SessionCheckpoint
+        {
+            AnswerId = CurrentAnswer.Id,
+            QuestionaryId = CurrentAnswer.QuestionaryId,
+            QuestionaryTitle = _questionaryTitle,
+            CurrentQuestionIndex = CurrentQuestionIndex,
+            Responses = new Dictionary<Guid, string>(Responses),
+            Status = CurrentAnswer.AnswerStatus?.AnswerStatus.ToString() ?? "UNFINISHED",
+            Metadata = new Dictionary<string, object>
+            {
+                ["totalQuestions"] = Questions.Count,
+                ["progressPercentage"] = ProgressPercentage
+            }
+        };
+
+        return Task.FromResult<SessionCheckpoint?>(checkpoint);
+    }
+
+    /// <summary>
+    /// Restores the session from a checkpoint.
+    /// </summary>
+    public void RestoreFromCheckpoint(SessionCheckpoint checkpoint)
+    {
+        CurrentQuestionIndex = checkpoint.CurrentQuestionIndex;
+        Responses = new Dictionary<Guid, string>(checkpoint.Responses);
+        
+        if (CurrentQuestionIndex >= 0 && CurrentQuestionIndex < Questions.Count)
+        {
+            CurrentQuestion = Questions[CurrentQuestionIndex];
+        }
+        
+        UpdateProgressPercentage();
+        StatusMessage = $"Question {CurrentQuestionIndex + 1} of {Questions.Count} (Restored)";
+        
+        _logger.LogInformation("Session restored from checkpoint for Answer {AnswerId}", checkpoint.AnswerId);
+    }
+
+    /// <summary>
+    /// Cleans up resources when the form is closed.
+    /// </summary>
+    public async Task CleanupAsync()
+    {
+        // Stop auto-save
+        _sessionManager.StopAutoSave();
+        
+        // Save final checkpoint if session is still unfinished
+        if (CurrentAnswer != null && 
+            CurrentAnswer.AnswerStatus?.AnswerStatus == AnswerStatus.Unfinished)
+        {
+            var checkpoint = await GetCurrentCheckpoint();
+            if (checkpoint != null)
+            {
+                await _sessionManager.SaveCheckpointAsync(checkpoint);
+            }
+        }
+        // Delete checkpoint if session is completed or cancelled
+        else if (CurrentAnswer != null)
+        {
+            await _sessionManager.DeleteCheckpointAsync(CurrentAnswer.Id);
+        }
     }
 }

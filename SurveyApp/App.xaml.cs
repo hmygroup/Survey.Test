@@ -30,6 +30,10 @@ public partial class App : Application
             var themeService = _serviceProvider.GetRequiredService<ThemeService>();
             themeService.LoadThemePreference();
 
+            // Cleanup stale checkpoints
+            var sessionManager = _serviceProvider.GetRequiredService<SessionManager>();
+            _ = Task.Run(async () => await sessionManager.CleanupStaleCheckpointsAsync());
+
             // Create and show the main window
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
@@ -124,6 +128,7 @@ public partial class App : Application
         services.AddSingleton<NavigationService>();
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<SessionManager>();
         services.AddSingleton<SurveyApp.Services.Infrastructure.QuestionEditorFactory>();
         services.AddTransient<ReactiveValidationService>();
         services.AddSingleton<CommandHistoryManager>();
@@ -143,6 +148,7 @@ public partial class App : Application
         services.AddTransient<QuestionEditorViewModel>();
         services.AddTransient<QuestionDialogViewModel>();
         services.AddTransient<ConstraintEditorViewModel>();
+        services.AddTransient<ResponseFormViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
