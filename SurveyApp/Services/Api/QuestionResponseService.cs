@@ -31,8 +31,9 @@ public class QuestionResponseService : ApiService
         string response,
         CancellationToken cancellationToken = default)
     {
+        var encodedResponse = Uri.EscapeDataString(response);
         return await PatchAsync<object, QuestionResponseDto>(
-            $"questionresponse/{ConnectionId}/response?questionResponseId={questionResponseId}&response={response}",
+            $"questionresponse/{ConnectionId}/response?questionResponseId={questionResponseId}&response={encodedResponse}",
             new { },
             cancellationToken);
     }

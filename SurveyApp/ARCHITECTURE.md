@@ -9,7 +9,7 @@ This document describes the architectural design of the Survey Management System
 ### Core Framework
 - **.NET 8.0** - Latest LTS version with C# 12 features
 - **WPF (Windows Presentation Foundation)** - Desktop UI framework
-- **ModernWPF** - Modern UI controls library (Windows 11 style)
+- **ModernWPF** - Modern UI controls library providing WinUI-style controls for WPF
 
 ### Key Libraries
 - **CommunityToolkit.Mvvm** - MVVM source generators and helpers

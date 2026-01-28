@@ -1,6 +1,6 @@
 # Survey Management System - WPF Application
 
-A modern, production-ready WPF application for managing questionnaires and surveys, built with .NET 8.0 and WinUI 3.
+A modern, production-ready WPF application for managing questionnaires and surveys, built with .NET 8.0 and ModernWPF.
 
 ## 🚀 Features
 

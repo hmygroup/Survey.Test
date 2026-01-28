@@ -19,8 +19,9 @@ public class AnswerService : ApiService
         int cardId,
         CancellationToken cancellationToken = default)
     {
+        var encodedUser = Uri.EscapeDataString(user);
         return await PostAsync<object, AnswerDto>(
-            $"answer/{ConnectionId}?questionaryId={questionaryId}&user={user}&cardId={cardId}",
+            $"answer/{ConnectionId}?questionaryId={questionaryId}&user={encodedUser}&cardId={cardId}",
             new { },
             cancellationToken);
     }

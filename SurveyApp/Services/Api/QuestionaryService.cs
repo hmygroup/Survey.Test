@@ -45,8 +45,9 @@ public class QuestionaryService : ApiService
     /// </summary>
     public async Task<QuestionaryDto?> CreateAsync(string name, CancellationToken cancellationToken = default)
     {
+        var encodedName = Uri.EscapeDataString(name);
         return await PostAsync<object, QuestionaryDto>(
-            $"questionary/{ConnectionId}/New/{name}", 
+            $"questionary/{ConnectionId}/New/{encodedName}", 
             new { }, 
             cancellationToken);
     }

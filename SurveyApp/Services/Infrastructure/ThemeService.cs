@@ -6,7 +6,6 @@ namespace SurveyApp.Services.Infrastructure;
 public class ThemeService
 {
     private readonly ILogger<ThemeService> _logger;
-    private const string ThemePreferenceKey = "AppTheme";
 
     public ThemeService(ILogger<ThemeService> logger)
     {
