@@ -37,73 +37,80 @@
         </StackPanel>
 
         <!-- Form Fields -->
-        <StackPanel Grid.Row="2">
-            <!-- Question Text Field -->
-            <TextBlock Text="Question Text *" 
-                      FontWeight="SemiBold"
-                      Margin="0,0,0,8" />
-            <TextBox Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    AcceptsReturn="True"
-                    TextWrapping="Wrap"
-                    VerticalScrollBarVisibility="Auto"
-                    Height="120"
-                    Margin="0,0,0,16"
-                    ui:ControlHelper.PlaceholderText="Enter your question here..."
-                    MaxLength="500" />
+        <ScrollViewer Grid.Row="2" 
+                     VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Question Text Field -->
+                <TextBlock Text="Question Text *" 
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8" />
+                <TextBox Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto"
+                        Height="120"
+                        Margin="0,0,0,16"
+                        ui:ControlHelper.PlaceholderText="Enter your question here..."
+                        MaxLength="500" />
 
-            <!-- Question Type Field -->
-            <TextBlock Text="Question Type *" 
-                      FontWeight="SemiBold"
-                      Margin="0,0,0,8" />
-            <ComboBox ItemsSource="{Binding QuestionTypes}"
-                     SelectedItem="{Binding SelectedQuestionType, Mode=TwoWay}"
-                     Margin="0,0,0,16"
-                     Height="32"
-                     ui:ControlHelper.PlaceholderText="Select question type..." />
+                <!-- Question Type Field -->
+                <TextBlock Text="Question Type *" 
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8" />
+                <ComboBox ItemsSource="{Binding QuestionTypes}"
+                         SelectedItem="{Binding SelectedQuestionType, Mode=TwoWay}"
+                         Margin="0,0,0,16"
+                         Height="32"
+                         ui:ControlHelper.PlaceholderText="Select question type..." />
 
-            <!-- Type Description -->
-            <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                   Padding="12"
-                   CornerRadius="4"
-                   Margin="0,0,0,16">
-                <StackPanel>
-                    <TextBlock FontWeight="SemiBold" Margin="0,0,0,4">
-                        <Run Text="ℹ️" />
-                        <Run Text="Question Type Guide" />
-                    </TextBlock>
-                    <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
-                        <Run Text="• System.String:" FontWeight="Medium" />
-                        <Run Text="Text input (short answer, paragraphs)" />
-                        <LineBreak />
-                        <Run Text="• System.Boolean:" FontWeight="Medium" />
-                        <Run Text="Yes/No or True/False questions" />
-                        <LineBreak />
-                        <Run Text="• System.Int32:" FontWeight="Medium" />
-                        <Run Text="Whole numbers (age, quantity)" />
-                        <LineBreak />
-                        <Run Text="• System.Decimal:" FontWeight="Medium" />
-                        <Run Text="Numbers with decimals (price, rating)" />
-                        <LineBreak />
-                        <Run Text="• System.DateTime:" FontWeight="Medium" />
-                        <Run Text="Date and time selection" />
-                        <LineBreak />
-                        <Run Text="• System.Byte[]:" FontWeight="Medium" />
-                        <Run Text="File upload (documents, images)" />
-                    </TextBlock>
-                </StackPanel>
-            </Border>
+                <!-- Type Description -->
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                       Padding="12"
+                       CornerRadius="4"
+                       Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Margin="0,0,0,4">
+                            <Run Text="ℹ️" />
+                            <Run Text="Question Type Guide" />
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                            <Run Text="• System.String:" FontWeight="Medium" />
+                            <Run Text="Text input (short answer, paragraphs)" />
+                            <LineBreak />
+                            <Run Text="• System.Boolean:" FontWeight="Medium" />
+                            <Run Text="Yes/No or True/False questions" />
+                            <LineBreak />
+                            <Run Text="• System.Int32:" FontWeight="Medium" />
+                            <Run Text="Whole numbers (age, quantity)" />
+                            <LineBreak />
+                            <Run Text="• System.Decimal:" FontWeight="Medium" />
+                            <Run Text="Numbers with decimals (price, rating)" />
+                            <LineBreak />
+                            <Run Text="• System.DateTime:" FontWeight="Medium" />
+                            <Run Text="Date and time selection" />
+                            <LineBreak />
+                            <Run Text="• System.Byte[]:" FontWeight="Medium" />
+                            <Run Text="File upload (documents, images)" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
 
-            <!-- Constraint Editor -->
-            <controls:ConstraintEditorView x:Name="ConstraintEditor"
-                                          Margin="0,0,0,16" />
+                <!-- Live Preview -->
+                <controls:QuestionPreviewControl x:Name="QuestionPreview"
+                                                Margin="0,0,0,16" />
 
-            <!-- Validation Message -->
-            <TextBlock Text="{Binding ValidationMessage}"
-                      Foreground="Red"
-                      FontSize="12"
-                      Margin="0,8,0,0"
-                      Visibility="{Binding HasValidationError, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </StackPanel>
+                <!-- Constraint Editor -->
+                <controls:ConstraintEditorView x:Name="ConstraintEditor"
+                                              Margin="0,0,0,16" />
+
+                <!-- Validation Message -->
+                <TextBlock Text="{Binding ValidationMessage}"
+                          Foreground="Red"
+                          FontSize="12"
+                          Margin="0,8,0,0"
+                          Visibility="{Binding HasValidationError, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+        </ScrollViewer>
 
         <!-- Action Buttons -->
         <Grid Grid.Row="3" Margin="0,24,0,0">
