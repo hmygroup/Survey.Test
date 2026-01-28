@@ -112,12 +112,20 @@ public partial class App : Application
         services.AddSingleton<NavigationService>();
         services.AddSingleton<DialogService>();
         services.AddSingleton<ThemeService>();
+        
+        // Register Caching Services
+        services.AddMemoryCache();
+        services.AddSingleton<GraphCacheService>();
 
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<QuestionaryListViewModel>();
+        services.AddTransient<QuestionaryDialogViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
+        services.AddTransient<QuestionaryListView>();
+        services.AddTransient<QuestionaryDialogWindow>();
 
         // Add Logging
         services.AddLogging(builder =>
