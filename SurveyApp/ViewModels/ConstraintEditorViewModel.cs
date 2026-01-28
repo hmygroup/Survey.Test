@@ -108,24 +108,29 @@ public partial class ConstraintEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Removes the selected constraint.
+    /// Removes the specified constraint or the selected constraint.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanRemoveConstraint))]
-    private void RemoveConstraint()
+    [RelayCommand]
+    private void RemoveConstraint(ConstraintDto? constraint = null)
     {
-        if (SelectedConstraint != null)
+        var constraintToRemove = constraint ?? SelectedConstraint;
+        
+        if (constraintToRemove != null)
         {
-            var policyName = SelectedConstraint.Policy?.Name ?? "Unknown";
-            Constraints.Remove(SelectedConstraint);
-            PolicyRecords.Clear();
-            SelectedConstraint = null;
+            var policyName = constraintToRemove.Policy?.Name ?? "Unknown";
+            Constraints.Remove(constraintToRemove);
+            
+            // Clear policy records if we're removing the selected constraint
+            if (constraintToRemove == SelectedConstraint)
+            {
+                PolicyRecords.Clear();
+                SelectedConstraint = null;
+            }
             
             _logger.LogInformation("Removed constraint: {PolicyName}", policyName);
             StatusMessage = $"Removed constraint: {policyName}";
         }
     }
-
-    private bool CanRemoveConstraint() => SelectedConstraint != null;
 
     /// <summary>
     /// Adds a new policy record to the selected constraint.
@@ -143,16 +148,19 @@ public partial class ConstraintEditorViewModel : ObservableObject
             Value = NewPolicyRecordValue.Trim()
         };
 
+        // Find the index first (before creating new constraint)
+        var index = Constraints.ToList().FindIndex(c => c.Id == SelectedConstraint.Id);
+
         // Add to constraint's policy records
         var records = SelectedConstraint.PolicyRecords.ToList();
         records.Add(newRecord);
-        SelectedConstraint = SelectedConstraint with { PolicyRecords = records };
+        var updatedConstraint = SelectedConstraint with { PolicyRecords = records };
 
-        // Update the constraint in the collection
-        var index = Constraints.IndexOf(SelectedConstraint);
+        // Update the constraint in the collection using the index
         if (index >= 0)
         {
-            Constraints[index] = SelectedConstraint;
+            Constraints[index] = updatedConstraint;
+            SelectedConstraint = updatedConstraint;
         }
 
         // Update UI collection
@@ -178,15 +186,18 @@ public partial class ConstraintEditorViewModel : ObservableObject
 
         PolicyRecords.Remove(record);
 
+        // Find the index first (before creating new constraint)
+        var index = Constraints.ToList().FindIndex(c => c.Id == SelectedConstraint.Id);
+
         // Update the constraint
         var records = SelectedConstraint.PolicyRecords.Where(r => r.Id != record.Id).ToList();
-        SelectedConstraint = SelectedConstraint with { PolicyRecords = records };
+        var updatedConstraint = SelectedConstraint with { PolicyRecords = records };
 
-        // Update the constraint in the collection
-        var index = Constraints.IndexOf(SelectedConstraint);
+        // Update the constraint in the collection using the index
         if (index >= 0)
         {
-            Constraints[index] = SelectedConstraint;
+            Constraints[index] = updatedConstraint;
+            SelectedConstraint = updatedConstraint;
         }
 
         _logger.LogInformation("Removed policy record: {Value}", record.Value);

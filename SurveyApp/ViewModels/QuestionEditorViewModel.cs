@@ -139,6 +139,8 @@ public partial class QuestionEditorViewModel : ObservableObject
                 StatusMessage = "Creating question...";
 
                 // Create question object for API
+                // Note: Constraints are managed locally and will be persisted
+                // when a dedicated API endpoint becomes available
                 var newQuestion = new
                 {
                     questionText = questionText,
@@ -146,6 +148,8 @@ public partial class QuestionEditorViewModel : ObservableObject
                     {
                         dotNetType = questionType
                     }
+                    // TODO: Add constraints when API endpoint is available
+                    // constraints = constraints
                 };
 
                 // Call API to create question
@@ -157,10 +161,19 @@ public partial class QuestionEditorViewModel : ObservableObject
                 if (createdQuestions != null && createdQuestions.Any())
                 {
                     var createdQuestion = createdQuestions.First();
-                    Questions.Add(createdQuestion);
+                    
+                    // Add constraints locally (they will be persisted when API endpoint is available)
+                    var questionWithConstraints = createdQuestion with
+                    {
+                        Constraints = constraints.ToList()
+                    };
+                    
+                    Questions.Add(questionWithConstraints);
                     StatusMessage = "Question created successfully";
-                    _logger.LogInformation("Question created successfully: {QuestionId}", createdQuestion.Id);
-                    await _dialogService.ShowMessageAsync("Success", "Question created successfully.");
+                    _logger.LogInformation("Question created successfully: {QuestionId} with {ConstraintCount} constraints", 
+                        createdQuestion.Id, constraints.Count);
+                    await _dialogService.ShowMessageAsync("Success", 
+                        $"Question created successfully with {constraints.Count} constraint(s).");
                 }
                 else
                 {
