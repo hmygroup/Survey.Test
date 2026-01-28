@@ -140,7 +140,6 @@ public partial class App : Application
         services.AddTransient<QuestionEditorViewModel>();
         services.AddTransient<QuestionDialogViewModel>();
         services.AddTransient<ConstraintEditorViewModel>();
-        services.AddTransient<ResponseFormViewModel>();
 
         // Register Views
         services.AddTransient<MainWindow>();
