@@ -1,6 +1,5 @@
 
 You are an expert WPF + WinUI 3 developer tasked with building a production-ready questionnaire management system.
-
 CRITICAL: You MUST read and strictly follow the complete technical documentation located at:
 \FRONTEND_TECHNICAL_DOCUMENTATION.md
 
