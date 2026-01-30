@@ -1,7 +1,7 @@
 
 You are an expert WPF + WinUI 3 developer tasked with building a production-ready questionnaire management system.
 
-**PROJECT STATUS**: Phase 4 IN PROGRESS 🔄 - See PHASE4_IMPLEMENTATION_SUMMARY.md for full details
+**PROJECT STATUS**: Phase 6 READY TO START 🚀 - See docs/phases/PHASE6_PLAN.md for complete specifications
 - Phase 1: Foundation established with .NET 8.0, ModernWPF, MVVM, DI, Serilog ✅ **COMPLETE**
 - Phase 2: Questionary Management UI with CRUD operations, search/filter, graph caching ✅ **COMPLETE**
 - Phase 3: Question Editor ✅ **COMPLETE** (100%)
@@ -16,17 +16,19 @@ You are an expert WPF + WinUI 3 developer tasked with building a production-read
   - ✅ API endpoints corrected per OpenAPI specification
   - ✅ Connection ID: 10001, Port: 5049
   - ✅ All services registered in DI container
-- Phase 4: Response Collection 🔄 **IN PROGRESS** (40% complete)
+- Phase 4: Response Collection ✅ **COMPLETE** (100% complete - See docs/phases/PHASE4_COMPLETE.md)
   - ✅ **AnswerStateMachine** (Stateless library, 4 states, 5 transitions, audit trail)
   - ✅ **ResponseFormView and ViewModel** (Navigation, progress tracking, auto-save)
-  - ⏳ Type-specific input controls integration (factory exists, needs UI integration)
-  - ⏳ **Session Checkpoint System** (SessionManager, auto-save every 30s, DPAPI encryption) - **NEXT PRIORITY**
-  - ⏳ Recovery Dialog (unfinished session detection on startup)
-  - ⏳ Enhanced metadata (time tracking, device info)
-  - ⏳ Submission enhancements (validation, confirmation, success page)
+  - ✅ Type-specific input controls integration (6 specialized templates)
+  - ✅ **Session Checkpoint System** (SessionManager, auto-save every 30s, DPAPI encryption)
+  - ✅ Recovery Dialog (unfinished session detection on startup)
+  - ✅ Enhanced metadata (time tracking, device info)
+  - ✅ Submission enhancements (validation, confirmation, success page)
+- Phase 5: Response Analysis ⏸️ **BLOCKED** (Backend APIs required)
+- Phase 6: Polish & Optimization 🎯 **CURRENT FOCUS** - Production readiness
 - Build verified (0 errors, 0 warnings)
 - All core infrastructure in place
-- Ready to continue Phase 4: Session Management & Type-Specific Controls
+- Ready to begin Phase 6: Polish, Testing, Accessibility, Documentation & Deployment
 
 **⚠️ BACKEND API BLOCKERS**: Some features implemented in frontend **cannot persist data** due to missing backend APIs:
 - ❌ Question Edit (PUT) - Changes are local only
@@ -62,13 +64,94 @@ PHASE COMPLETION STATUS:
   - Question Type Factory: ✅ Complete (QuestionEditorFactory for 11 types: Text, Boolean, Integer, Decimal, Date, Email, Phone, Rating, SingleChoice, MultipleChoice, FileUpload)
   - Reactive Validation: ✅ Complete (ReactiveValidationService with Rx.NET, debouncing, 11 validation rules)
   - Undo/Redo: ✅ Complete (Command pattern: IUndoableCommand, AddQuestionCommand, DeleteQuestionCommand, CommandHistoryManager with graph-based history)
-- Phase 4: Response Collection 🔄 **IN PROGRESS** (40% complete - See PHASE4_IMPLEMENTATION_SUMMARY.md)
+- Phase 4: Response Collection ✅ **COMPLETE** (100% complete - See docs/phases/PHASE4_COMPLETE.md)
   - Answer State Machine: ✅ Complete (Stateless library, 4 states, audit trail)
   - Response Form: ✅ Complete (Navigation, progress tracking, auto-save)
-  - Type-Specific Controls: ⏳ Next (integrate factory with ResponseFormView)
-  - Session Checkpoints: ⏳ Next (SessionManager, auto-save, DPAPI encryption) - **CURRENT PRIORITY**
-  - Recovery Dialog: ⏳ Pending (startup session detection)
-  - Enhanced Features: ⏳ Pending (metadata, validation, confirmation)
+  - Type-Specific Controls: ✅ Complete (6 specialized input templates)
+  - Session Checkpoints: ✅ Complete (SessionManager, auto-save, DPAPI encryption)
+  - Recovery Dialog: ✅ Complete (startup session detection, 3 recovery options)
+  - Enhanced Features: ✅ Complete (metadata, validation, confirmation)
+- Phase 5: Response Analysis ⏸️ **BLOCKED** (Waiting for backend APIs - see BACKEND_API_REQUIREMENTS.md)
+- Phase 6: Polish & Optimization 🎯 **CURRENT FOCUS** (See docs/phases/PHASE6_PLAN.md)
+
+---
+
+## 🎯 PHASE 6: POLISH & OPTIMIZATION - NEXT TASK
+
+**Complete Documentation:** See [docs/phases/PHASE6_PLAN.md](docs/phases/PHASE6_PLAN.md) for comprehensive specifications.
+
+**Objective:** Prepare the application for production deployment with performance optimization, accessibility compliance, comprehensive testing, documentation, and deployment packaging.
+
+**Duration:** 2-3 weeks
+
+### Priority Tasks for Phase 6:
+
+#### 1. Performance Optimization (Week 1, Days 1-2)
+- [ ] Implement UI Virtualization for large lists (VirtualizingStackPanel)
+- [ ] Add lazy loading for question details
+- [ ] Optimize GraphCacheService with LRU eviction
+- [ ] Audit all async operations for ConfigureAwait(false)
+- [ ] Add cancellation tokens to long-running operations
+
+#### 2. Unit & Integration Testing (Week 1, Days 3-5)
+- [ ] Unit tests for all ViewModels (target: 80% coverage)
+- [ ] Unit tests for all Services
+- [ ] Integration tests using WireMock.Net for API mocking
+- [ ] Test error handling scenarios (404, 500, timeout)
+- [ ] Setup Coverlet for code coverage reporting
+
+#### 3. Accessibility Compliance (Week 2, Days 1-2)
+- [ ] WCAG 2.1 AAA compliance audit
+- [ ] Full keyboard navigation support
+- [ ] Screen reader compatibility (AutomationProperties)
+- [ ] Color contrast ratio ≥ 7:1 for text
+- [ ] High contrast mode support
+- [ ] Test with Narrator and Windows Accessibility Insights
+
+#### 4. Documentation (Week 2, Days 3-4)
+- [ ] User Guide with screenshots (Getting Started, Features, Troubleshooting)
+- [ ] Developer Documentation (Architecture, API integration, Extending)
+- [ ] API documentation refinements
+- [ ] Create FAQ section
+- [ ] In-app help system
+
+#### 5. Deployment Packaging (Week 3, Days 1-2)
+- [ ] Create MSIX package for Microsoft Store
+- [ ] Setup ClickOnce deployment (alternative)
+- [ ] Configure auto-update mechanism
+- [ ] Code signing certificate setup
+- [ ] Environment-specific configurations (Dev/Staging/Production)
+- [ ] Test installation/uninstallation flows
+
+#### 6. Telemetry & Monitoring (Week 3, Days 3-4)
+- [ ] Integrate Application Insights (Microsoft.ApplicationInsights.WindowsDesktop)
+- [ ] Track key events (Questionary Created, Survey Submitted, Errors)
+- [ ] Create Application Insights dashboard
+- [ ] Custom analytics (DAU/WAU/MAU, feature usage)
+- [ ] Performance monitoring (page load time, API response time)
+
+#### 7. Security Audit & Final QA (Week 3, Day 5)
+- [ ] Security audit (input sanitization, HTTPS enforcement)
+- [ ] Dependency vulnerability scan
+- [ ] Final manual testing checklist
+- [ ] Performance testing (10,000+ questions, memory leak test)
+- [ ] Cross-version testing (Windows 10/11, different DPI)
+
+### Success Metrics:
+- ✅ < 3s application startup time
+- ✅ < 500ms page navigation
+- ✅ 80%+ test coverage
+- ✅ WCAG 2.1 AAA compliance
+- ✅ 0 critical security vulnerabilities
+- ✅ < 200 MB memory for 1000 questionnaires
+
+### Reference Documentation:
+- **Complete Phase 6 Plan:** [docs/phases/PHASE6_PLAN.md](docs/phases/PHASE6_PLAN.md)
+- **Frontend Technical Docs:** [docs/frontend/FRONTEND_TECHNICAL_DOCUMENTATION.md](docs/frontend/FRONTEND_TECHNICAL_DOCUMENTATION.md)
+- **Backend API Requirements:** [docs/api/BACKEND_API_REQUIREMENTS.md](docs/api/BACKEND_API_REQUIREMENTS.md)
+- **Phase 4 Complete Summary:** [docs/phases/PHASE4_COMPLETE.md](docs/phases/PHASE4_COMPLETE.md)
+
+---
 
 ADVANCED REQUIREMENTS - Use Latest Techniques:
 
@@ -709,7 +792,332 @@ A comprehensive API documentation file has been created at `/API_DOCUMENTATION.m
 
 ## 📝 Additional Copilot Chat Prompts for Specific Features
 
-### 🎯 PHASE 4: Response Collection (CURRENT FOCUS)
+### ✅ PHASE 4: Response Collection (COMPLETE)
+
+Phase 4 has been successfully completed. See [docs/phases/PHASE4_COMPLETE.md](docs/phases/PHASE4_COMPLETE.md) for implementation details.
+
+All features implemented:
+- ✅ Answer State Machine with Stateless library
+- ✅ Response Form with navigation and progress tracking
+- ✅ Type-specific input controls (6 templates)
+- ✅ Session Checkpoint System with DPAPI encryption
+- ✅ Recovery Dialog for unfinished sessions
+- ✅ Enhanced metadata collection and tracking
+- ✅ Submission enhancements with validation
+
+---
+
+### 🎯 PHASE 6: Polish & Optimization (CURRENT FOCUS)
+
+**Complete specifications:** See [docs/phases/PHASE6_PLAN.md](docs/phases/PHASE6_PLAN.md)
+
+#### For Performance Optimization (Week 1, Priority 1)
+```
+@workspace Implement performance optimizations for the WPF questionnaire application.
+
+Requirements from docs/phases/PHASE6_PLAN.md:
+1. UI Virtualization
+   - Add VirtualizingStackPanel to QuestionaryListView DataGrid
+   - Enable UI virtualization for QuestionEditorView question lists
+   - Implement recycling mode for better memory usage
+   - Add paging for large result sets (100 items per page)
+
+2. Lazy Loading
+   - Implement lazy loading for questionary questions (load on demand)
+   - Defer loading of response statistics until requested
+   - Background loading with progress indicators
+   - Cache loaded data to prevent redundant API calls
+
+3. Graph Cache Optimization
+   - Add LRU (Least Recently Used) eviction policy to GraphCacheService
+   - Set cache size limit (max 1000 nodes)
+   - Add telemetry for cache hit/miss rates
+   - Optimize dependency graph traversal (use BFS)
+
+4. Async/Await Best Practices
+   - Audit all API calls and add ConfigureAwait(false) where appropriate
+   - Add CancellationToken support to long-running operations
+   - Use Task.WhenAll for parallel operations
+   - Replace synchronous file I/O with async alternatives
+
+Success Metrics:
+- Application startup < 3 seconds
+- Page navigation < 500ms
+- Memory usage < 200 MB for 1000 questionnaires
+- Smooth scrolling with 10,000+ items
+
+Files to modify:
+- Views/QuestionaryListView.xaml (add virtualization)
+- Views/QuestionEditorView.xaml (add virtualization)
+- Services/GraphCacheService.cs (add LRU eviction)
+- All ViewModels (add ConfigureAwait, CancellationToken)
+```
+
+#### For Unit & Integration Testing (Week 1, Priority 2)
+```
+@workspace Create comprehensive test suite for the questionnaire application.
+
+Requirements:
+1. Unit Tests (Target: 80% coverage)
+   - Test all ViewModels using AAA pattern (Arrange, Act, Assert)
+   - Test all Services with mocked dependencies (use Moq or NSubstitute)
+   - Test StateMachine transitions
+   - Test ValidationService rules
+   - Test GraphCacheService invalidation
+   - Test Converters (NullToBooleanConverter, etc.)
+
+2. Integration Tests
+   - Use WireMock.Net to mock backend APIs
+   - Test all API services (QuestionaryService, QuestionService, AnswerService, etc.)
+   - Test error handling (404, 500, timeout scenarios)
+   - Test retry logic for transient failures
+   - Test data serialization/deserialization
+
+3. Code Coverage
+   - Install Coverlet NuGet package
+   - Configure coverage reporting with ReportGenerator
+   - Target: 80%+ line coverage
+   - Exclude UI code-behind from coverage metrics
+
+Framework: xUnit or NUnit
+Mocking: Moq or NSubstitute
+Coverage: Coverlet + ReportGenerator
+
+Files to create:
+- SurveyApp.Tests/ViewModels/*.cs
+- SurveyApp.Tests/Services/*.cs
+- SurveyApp.Tests/Integration/*.cs
+- SurveyApp.Tests/SurveyApp.Tests.csproj
+
+Example test structure:
+```csharp
+[Fact]
+public async Task CreateQuestionaryAsync_ValidInput_CreatesSuccessfully()
+{
+    // Arrange
+    var mockService = new Mock<IQuestionaryService>();
+    var viewModel = new QuestionaryDialogViewModel(mockService.Object);
+    viewModel.Title = "Test Survey";
+    
+    // Act
+    await viewModel.SaveAsync();
+    
+    // Assert
+    mockService.Verify(x => x.CreateAsync(It.IsAny<QuestionaryDto>()), Times.Once);
+    Assert.True(viewModel.IsSuccess);
+}
+```
+```
+
+#### For Accessibility Compliance (Week 2, Priority 3)
+```
+@workspace Implement WCAG 2.1 AAA accessibility compliance for the WPF application.
+
+Requirements from docs/phases/PHASE6_PLAN.md:
+1. Keyboard Navigation
+   - Full keyboard navigation for all views (Tab, Shift+Tab)
+   - Keyboard shortcuts: Ctrl+N (New), Ctrl+S (Save), Ctrl+F (Find), Ctrl+Z/Y (Undo/Redo)
+   - Focus indicators visible on all focusable elements (3:1 contrast ratio)
+   - Logical tab order for forms
+   - Escape key closes dialogs, Enter submits forms
+
+2. Screen Reader Support
+   - Add AutomationProperties.Name to all controls
+   - Add AutomationProperties.HelpText for complex controls
+   - ARIA labels for dynamic content
+   - Announce state changes (loading, success, error)
+   - Descriptive button labels (not just icons)
+
+3. Visual Accessibility
+   - Color contrast ratio ≥ 7:1 for text (AAA standard)
+   - Color contrast ratio ≥ 4.5:1 for UI components
+   - No information conveyed by color alone (use icons + text)
+   - Support 200% zoom without horizontal scrolling
+   - High Contrast mode support
+
+4. Text Alternatives
+   - Alt text for all images and icons
+   - Tooltips for icon-only buttons
+   - Descriptive link text (avoid "Click here")
+   - Labels for all form inputs
+
+Testing:
+- Test with keyboard only (no mouse)
+- Test with Windows Narrator screen reader
+- Use Microsoft Accessibility Insights tool
+- Test in High Contrast mode
+- Use Color Contrast Analyzer
+
+Files to modify:
+- All XAML views (add AutomationProperties)
+- All ViewModels (add descriptive labels)
+- App.xaml (ensure proper focus styling)
+```
+
+#### For Documentation (Week 2, Priority 4)
+```
+@workspace Create comprehensive user and developer documentation.
+
+Requirements:
+1. User Guide (docs/user-guide/)
+   - Getting Started (installation, first launch, configuration)
+   - Creating Questionnaries (step-by-step with screenshots)
+   - Managing Questions (add, edit, delete, reorder, constraints)
+   - Collecting Responses (starting survey, navigation, submission)
+   - Session Recovery (handling interrupted surveys)
+   - Analyzing Results (when backend APIs available)
+   - Troubleshooting common issues
+   - FAQ section
+
+2. Developer Documentation (docs/developer-guide/)
+   - Architecture Overview (MVVM, DI, services structure)
+   - API Integration Guide (endpoints, authentication, error handling)
+   - Adding New Question Types (using factory pattern)
+   - Adding New Validation Rules (ReactiveValidationService)
+   - Extending State Machine (new states, transitions)
+   - Caching Strategy (GraphCacheService usage)
+   - Testing Guidelines (unit tests, integration tests)
+   - Contributing Guidelines (code style, PR process)
+
+3. API Documentation
+   - Update OpenAPI/Swagger specifications
+   - Add request/response examples for each endpoint
+   - Document authentication requirements
+   - Document rate limiting rules
+   - Document error codes and handling
+
+Format: Markdown with code samples and screenshots
+Location: /docs/user-guide/ and /docs/developer-guide/
+
+Include diagrams for:
+- Application architecture
+- Data flow
+- State machine transitions
+- Deployment architecture
+```
+
+#### For Deployment Packaging (Week 3, Priority 5)
+```
+@workspace Create deployment packages for production distribution.
+
+Requirements from docs/phases/PHASE6_PLAN.md:
+1. MSIX Packaging (Preferred)
+   - Create MSIX manifest with app metadata
+   - Configure app capabilities (internetClient, localFiles)
+   - Add application icons (multiple sizes: 16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
+   - Configure auto-update from Microsoft Store
+   - Setup code signing certificate
+   - Test installation/uninstallation flows
+
+2. ClickOnce Deployment (Alternative)
+   - Create ClickOnce publish profile
+   - Configure auto-update (check on startup)
+   - Setup deployment URL
+   - Digital signature for trusted installation
+
+3. Configuration Management
+   - Move hardcoded settings to appsettings.json
+   - Environment-specific configs (Development, Staging, Production)
+   - User settings persistence (theme preference, window size/position)
+   - Feature flags for gradual rollout
+
+Example appsettings.json:
+```json
+{
+  "ApiSettings": {
+    "BaseUrl": "https://api.production.com",
+    "ConnectionId": "10001",
+    "TimeoutSeconds": 30
+  },
+  "Features": {
+    "EnableTelemetry": true,
+    "EnableAutoSave": true,
+    "AutoSaveIntervalSeconds": 30
+  },
+  "Logging": {
+    "MinimumLevel": "Information",
+    "RetentionDays": 7
+  }
+}
+```
+
+Files to create:
+- Package.appxmanifest (MSIX)
+- SurveyApp.Deployment/ project (ClickOnce)
+- appsettings.json, appsettings.Development.json, appsettings.Production.json
+```
+
+#### For Telemetry & Monitoring (Week 3, Priority 6)
+```
+@workspace Integrate Application Insights for telemetry and monitoring.
+
+Requirements:
+1. Application Insights Setup
+   - Install Microsoft.ApplicationInsights.WindowsDesktop NuGet package
+   - Configure instrumentation key (from Azure portal)
+   - Initialize TelemetryClient in App.xaml.cs
+   - Configure telemetry processors for filtering
+
+2. Event Tracking
+   - Page views (navigation events)
+   - User actions (Questionary Created, Question Added, Survey Submitted, etc.)
+   - Exceptions and errors (automatic + manual)
+   - Performance metrics (page load time, API response time)
+   - Custom metrics (cache hit rate, session recovery rate)
+
+3. Analytics Dashboard
+   - Create Application Insights dashboard in Azure portal
+   - Key metrics: DAU/WAU/MAU, feature usage, error rate
+   - Performance charts: response times, memory usage
+   - User journey funnel: questionary creation → question addition → survey submission
+
+Example telemetry code:
+```csharp
+public class TelemetryService : ITelemetryService
+{
+    private readonly TelemetryClient _telemetry;
+
+    public TelemetryService(TelemetryConfiguration config)
+    {
+        _telemetry = new TelemetryClient(config);
+    }
+
+    public void TrackEvent(string eventName, Dictionary<string, string> properties = null)
+    {
+        _telemetry.TrackEvent(eventName, properties);
+    }
+
+    public void TrackException(Exception exception)
+    {
+        _telemetry.TrackException(exception);
+    }
+
+    public void TrackMetric(string metricName, double value)
+    {
+        _telemetry.TrackMetric(metricName, value);
+    }
+}
+```
+
+Events to track:
+- Application.Started
+- Questionary.Created
+- Question.Added / Edited / Deleted
+- Survey.Started / Submitted / Recovered
+- Error.Occurred (with exception details)
+
+Files to create:
+- Services/Telemetry/TelemetryService.cs
+- Services/Telemetry/ITelemetryService.cs
+
+Files to modify:
+- App.xaml.cs (initialize Application Insights)
+- All ViewModels (add telemetry tracking)
+```
+
+---
+
+### ARCHIVED: Previous Phase Prompts
 
 #### For Session Checkpoint System (NEXT TASK)
 ```
