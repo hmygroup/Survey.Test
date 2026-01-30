@@ -1,3 +1,5 @@
+using Wpf.Ui;
+
 namespace SurveyApp.Services.Infrastructure;
 
 /// <summary>
@@ -10,6 +12,7 @@ public class ThemeService
     public ThemeService(ILogger<ThemeService> logger)
     {
         _logger = logger;
+        LoadThemePreference(); // Load theme preference on startup
     }
 
     /// <summary>
@@ -26,9 +29,9 @@ public class ThemeService
         {
             _logger.LogInformation("Applying theme: {Theme}", theme);
             
-            // TODO: Update WPF-UI theme
-            // WPF-UI theme switching can be implemented here
-
+            // Apply theme using WPF UI's theme manager
+            ApplicationThemeManager.Apply(theme == "Light" ? ApplicationTheme.Light : ApplicationTheme.Dark);
+            
             CurrentTheme = theme;
             SaveThemePreference(theme);
         }

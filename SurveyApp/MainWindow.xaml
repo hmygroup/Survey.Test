@@ -4,9 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        mc:Ignorable="d"
-        ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-        ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+        xmlns:local="clr-namespace:SurveyApp.Views"
         Title="{Binding Title}"
         Height="720"
         Width="1280"
@@ -18,96 +16,72 @@
         WindowCornerPreference="Round">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Title Bar -->
-        <ui:TitleBar Grid.Row="0"
+        <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2"
                      Title="{Binding Title}"
                      ShowMaximize="True"
                      ShowMinimize="True"
                      ShowClose="True" />
 
-        <!-- Main Content -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- Navigation Pane -->
+        <Border Grid.Row="1" Grid.Column="0"
+                BorderThickness="0,0,1,0">
+            <ui:NavigationView x:Name="NavigationView"
+                               IsPaneOpen="True"
+                               SelectionChanged="NavigationView_SelectionChanged"
+                               Background="Transparent"
+                               IsBackButtonVisible="Collapsed"
+                               OpenPaneLength="240">
+                <ui:NavigationView.Header>
+                    <ui:BreadcrumbBar ItemsSource="{Binding BreadcrumbItems}"
+                                      Margin="16,8,16,0" />
+                </ui:NavigationView.Header>
 
-            <!-- Navigation Menu -->
-            <Border Grid.Column="0"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="0,0,1,0">
-                <StackPanel Margin="12">
-                    <!-- Home Button -->
-                    <ui:Button Command="{Binding NavigateToHomeCommand}"
-                              HorizontalAlignment="Stretch"
-                              Margin="0,0,0,8"
-                              Appearance="Secondary">
-                        <ui:Button.Icon>
-                            <ui:SymbolIcon Symbol="Home20" />
-                        </ui:Button.Icon>
-                        <ui:Button.Content>
-                            <TextBlock Text="Home" Margin="8,0,0,0" />
-                        </ui:Button.Content>
-                    </ui:Button>
+                <ui:NavigationView.MenuItems>
+                    <ui:NavigationViewItem x:Name="HomeNavItem"
+                                           Content="Home">
+                        <ui:NavigationViewItem.Icon>
+                            <ui:SymbolIcon Symbol="Home24" />
+                        </ui:NavigationViewItem.Icon>
+                    </ui:NavigationViewItem>
+                    <ui:NavigationViewItem x:Name="QuestionnairesNavItem"
+                                           Content="Questionnaires">
+                        <ui:NavigationViewItem.Icon>
+                            <ui:SymbolIcon Symbol="DocumentBulletList24" />
+                        </ui:NavigationViewItem.Icon>
+                    </ui:NavigationViewItem>
+                    <ui:NavigationViewItem x:Name="ResponsesNavItem"
+                                           Content="Responses">
+                        <ui:NavigationViewItem.Icon>
+                            <ui:SymbolIcon Symbol="DataUsage24" />
+                        </ui:NavigationViewItem.Icon>
+                    </ui:NavigationViewItem>
+                </ui:NavigationView.MenuItems>
 
-                    <!-- Questionnaires Button -->
-                    <ui:Button Command="{Binding NavigateToQuestionnairesCommand}"
-                              HorizontalAlignment="Stretch"
-                              Margin="0,0,0,8"
-                              Appearance="Secondary">
-                        <ui:Button.Icon>
-                            <ui:SymbolIcon Symbol="DocumentBulletList20" />
-                        </ui:Button.Icon>
-                        <ui:Button.Content>
-                            <TextBlock Text="Questionnaires" Margin="8,0,0,0" />
-                        </ui:Button.Content>
-                    </ui:Button>
-
-                    <!-- Responses Button -->
-                    <ui:Button Command="{Binding NavigateToResponsesCommand}"
-                              HorizontalAlignment="Stretch"
-                              Margin="0,0,0,8"
-                              Appearance="Secondary">
-                        <ui:Button.Icon>
-                            <ui:SymbolIcon Symbol="DataUsage20" />
-                        </ui:Button.Icon>
-                        <ui:Button.Content>
-                            <TextBlock Text="Responses" Margin="8,0,0,0" />
-                        </ui:Button.Content>
-                    </ui:Button>
-
-                    <!-- Spacer -->
-                    <Border Height="1" />
-
-                    <!-- Toggle Theme Button (at bottom) -->
-                    <ui:Button Command="{Binding ToggleThemeCommand}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Bottom"
-                              Margin="0,12,0,0"
-                              Appearance="Secondary">
-                        <ui:Button.Icon>
+                <ui:NavigationView.FooterMenuItems>
+                    <ui:NavigationViewItem x:Name="ThemeNavItem"
+                                           Content="Toggle Theme">
+                        <ui:NavigationViewItem.Icon>
                             <ui:SymbolIcon Symbol="WeatherMoon20" />
-                        </ui:Button.Icon>
-                        <ui:Button.Content>
-                            <TextBlock Text="Toggle Theme" Margin="8,0,0,0" />
-                        </ui:Button.Content>
-                    </ui:Button>
-                </StackPanel>
-            </Border>
+                        </ui:NavigationViewItem.Icon>
+                    </ui:NavigationViewItem>
+                </ui:NavigationView.FooterMenuItems>
+            </ui:NavigationView>
+        </Border>
 
-            <!-- Content Frame -->
-            <Border Grid.Column="1"
-                    Background="{DynamicResource ApplicationBackgroundBrush}">
-                <Frame x:Name="ContentFrame"
-                       NavigationUIVisibility="Hidden"
-                       Margin="16" />
-            </Border>
-        </Grid>
+        <!-- Main Content -->
+        <Frame x:Name="ContentFrame"
+               Grid.Row="1" Grid.Column="1"
+               NavigationUIVisibility="Hidden"
+               Margin="16" />
     </Grid>
 </ui:FluentWindow>

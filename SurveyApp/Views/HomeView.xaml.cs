@@ -5,8 +5,9 @@ namespace SurveyApp.Views;
 /// </summary>
 public partial class HomeView : Page
 {
-    public HomeView()
+    public HomeView(HomeViewModel viewModel)
     {
         InitializeComponent();
+        DataContext = viewModel;
     }
 }

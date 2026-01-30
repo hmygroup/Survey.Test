@@ -7,43 +7,155 @@
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="1000">
 
-    <Grid>
-        <StackPanel VerticalAlignment="Center" 
-                   HorizontalAlignment="Center">
-            <TextBlock Text="Welcome to Survey Management System" 
-                      FontSize="28" 
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,32">
+            <TextBlock Style="{StaticResource HeadingTextBlock}"
+                      Text="Dashboard"/>
+            <TextBlock Style="{StaticResource SubheadingTextBlock}"
+                      Text="Welcome back! Here's an overview of your survey management system."/>
+        </StackPanel>
+
+        <!-- Statistics Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,32">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Total Questionnaires Card -->
+            <ui:CardControl Grid.Column="0" Margin="0,0,16,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="DocumentMultiple20" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Questionnaires"
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                              Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding TotalQuestionnaires}"
+                              FontSize="28"
+                              FontWeight="Bold"/>
+                </StackPanel>
+            </ui:CardControl>
+
+            <!-- Total Responses Card -->
+            <ui:CardControl Grid.Column="1" Margin="0,0,16,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="DocumentBulletList20" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Responses"
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                              Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding TotalResponses}"
+                              FontSize="28"
+                              FontWeight="Bold"/>
+                </StackPanel>
+            </ui:CardControl>
+
+            <!-- Completion Rate Card -->
+            <ui:CardControl Grid.Column="2" Margin="0,0,16,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="DataBarVertical20" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Completion Rate"
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                              Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding CompletionRate, StringFormat={}{0:P1}}"
+                              FontSize="28"
+                              FontWeight="Bold"/>
+                </StackPanel>
+            </ui:CardControl>
+
+            <!-- Today Items Card -->
+            <ui:CardControl Grid.Column="3">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="Clock20" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Today Items"
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                              Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding TodayItems}"
+                              FontSize="28"
+                              FontWeight="Bold"/>
+                </StackPanel>
+            </ui:CardControl>
+        </Grid>
+
+        <!-- Quick Actions -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,32">
+            <TextBlock Text="Quick Actions"
+                      FontSize="18"
                       FontWeight="SemiBold"
-                      TextAlignment="Center"
-                      Margin="0,0,0,16" />
-            <TextBlock Text="Select an option from the menu to get started" 
-                      FontSize="16" 
-                      TextAlignment="Center"
-                      Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-            <StackPanel Orientation="Horizontal" 
-                       HorizontalAlignment="Center"
-                       Margin="0,32,0,0">
-                <StackPanel Margin="0,0,16,0">
-                    <TextBlock Text="📊" FontSize="32" TextAlignment="Center" />
-                    <TextBlock Text="Create Questionnaires" FontWeight="SemiBold" />
-                    <TextBlock Text="Design custom surveys" 
-                             TextAlignment="Center"
-                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </StackPanel>
-                <StackPanel Margin="16,0">
-                    <TextBlock Text="✏️" FontSize="32" TextAlignment="Center" />
-                    <TextBlock Text="Collect Responses" FontWeight="SemiBold" />
-                    <TextBlock Text="Gather user feedback" 
-                             TextAlignment="Center"
-                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </StackPanel>
-                <StackPanel Margin="16,0,0,0">
-                    <TextBlock Text="📈" FontSize="32" TextAlignment="Center" />
-                    <TextBlock Text="Analyze Results" FontWeight="SemiBold" />
-                    <TextBlock Text="View insights" 
-                             TextAlignment="Center"
-                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </StackPanel>
-            </StackPanel>
+                      Margin="0,0,0,16"/>
+            <WrapPanel>
+                <ui:Button Command="{Binding CreateQuestionaryCommand}"
+                          Appearance="Primary"
+                          Margin="0,0,12,0">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="Add20"/>
+                    </ui:Button.Icon>
+                    <ui:Button.Content>
+                        <TextBlock Text="Create Questionnaire" Margin="8,0,0,0"/>
+                    </ui:Button.Content>
+                </ui:Button>
+
+                <ui:Button Command="{Binding ViewResponsesCommand}"
+                          Appearance="Secondary"
+                          Margin="0,0,12,0">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="DocumentBulletList20"/>
+                    </ui:Button.Icon>
+                    <ui:Button.Content>
+                        <TextBlock Text="View Responses" Margin="8,0,0,0"/>
+                    </ui:Button.Content>
+                </ui:Button>
+
+                <ui:Button Appearance="Secondary">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="DataBarVertical20"/>
+                    </ui:Button.Icon>
+                    <ui:Button.Content>
+                        <TextBlock Text="Analytics" Margin="8,0,0,0"/>
+                    </ui:Button.Content>
+                </ui:Button>
+            </WrapPanel>
+        </StackPanel>
+
+        <!-- Recent Activity -->
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Recent Activity"
+                      FontSize="18"
+                      FontWeight="SemiBold"
+                      Margin="0,0,0,16"/>
+            <ui:CardControl>
+                <ListBox ItemsSource="{Binding RecentActivities}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
+                                <ui:SymbolIcon Symbol="Circle20" FontSize="8" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <TextBlock Text="{Binding}"
+                                          FontSize="14"
+                                          VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ui:CardControl>
         </StackPanel>
     </Grid>
 </Page>

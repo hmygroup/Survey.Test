@@ -173,12 +173,13 @@ public partial class QuestionaryListViewModel : ObservableObject
     /// <summary>
     /// Edits the selected questionnaire.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
-    private async Task EditQuestionaryAsync()
+    [RelayCommand]
+    private async Task EditQuestionaryAsync(QuestionaryDto? questionary)
     {
-        if (SelectedQuestionary == null) return;
+        var targetQuestionary = questionary ?? SelectedQuestionary;
+        if (targetQuestionary == null) return;
 
-        _logger.LogInformation("Edit questionary: {Id}", SelectedQuestionary.Id);
+        _logger.LogInformation("Edit questionary: {Id}", targetQuestionary.Id);
         
         // Note: The API doesn't have an update endpoint yet, so we'll show a message
         await _dialogService.ShowMessageAsync("Info", 
@@ -190,7 +191,7 @@ public partial class QuestionaryListViewModel : ObservableObject
         {
             var dialog = _serviceProvider.GetRequiredService<QuestionaryDialogWindow>();
             var dialogViewModel = (QuestionaryDialogViewModel)dialog.DataContext;
-            dialogViewModel.ConfigureForEdit(SelectedQuestionary);
+            dialogViewModel.ConfigureForEdit(targetQuestionary);
 
             var result = dialog.ShowDialog();
             
@@ -200,12 +201,12 @@ public partial class QuestionaryListViewModel : ObservableObject
                 
                 IsLoading = true;
                 StatusMessage = $"Updating '{name}'...";
-                _logger.LogInformation("Updating questionary: {Id}", SelectedQuestionary.Id);
+                _logger.LogInformation("Updating questionary: {Id}", targetQuestionary.Id);
 
-                await _questionaryService.UpdateAsync(SelectedQuestionary.Id, name, description);
+                await _questionaryService.UpdateAsync(targetQuestionary.Id, name, description);
                 
                 await _dialogService.ShowMessageAsync("Success", $"Questionnaire '{name}' updated successfully");
-                _logger.LogInformation("Successfully updated questionary: {Id}", SelectedQuestionary.Id);
+                _logger.LogInformation("Successfully updated questionary: {Id}", targetQuestionary.Id);
                 
                 // Reload the list
                 await LoadQuestionnairesAsync();
@@ -213,7 +214,7 @@ public partial class QuestionaryListViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error updating questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogError(ex, "Error updating questionary: {Id}", targetQuestionary.Id);
             StatusMessage = $"Error updating questionary: {ex.Message}";
             await _dialogService.ShowErrorAsync("Error", $"Failed to update questionnaire: {ex.Message}");
         }
@@ -227,14 +228,15 @@ public partial class QuestionaryListViewModel : ObservableObject
     /// <summary>
     /// Deletes the selected questionnaire.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
-    private async Task DeleteQuestionaryAsync()
+    [RelayCommand]
+    private async Task DeleteQuestionaryAsync(QuestionaryDto? questionary)
     {
-        if (SelectedQuestionary == null) return;
+        var targetQuestionary = questionary ?? SelectedQuestionary;
+        if (targetQuestionary == null) return;
 
         var confirmed = await _dialogService.ShowConfirmationAsync(
             "Confirm Delete",
-            $"Are you sure you want to delete '{SelectedQuestionary.Name}'? This action cannot be undone.");
+            $"Are you sure you want to delete '{targetQuestionary.Name}'? This action cannot be undone.");
 
         if (!confirmed)
         {
@@ -245,20 +247,20 @@ public partial class QuestionaryListViewModel : ObservableObject
         try
         {
             IsLoading = true;
-            StatusMessage = $"Deleting '{SelectedQuestionary.Name}'...";
-            _logger.LogInformation("Deleting questionary: {Id}", SelectedQuestionary.Id);
+            StatusMessage = $"Deleting '{targetQuestionary.Name}'...";
+            _logger.LogInformation("Deleting questionary: {Id}", targetQuestionary.Id);
 
-            await _questionaryService.DeleteAsync(SelectedQuestionary.Id);
+            await _questionaryService.DeleteAsync(targetQuestionary.Id);
 
-            await _dialogService.ShowMessageAsync("Success", $"'{SelectedQuestionary.Name}' deleted successfully");
-            _logger.LogInformation("Successfully deleted questionary: {Id}", SelectedQuestionary.Id);
+            await _dialogService.ShowMessageAsync("Success", $"'{targetQuestionary.Name}' deleted successfully");
+            _logger.LogInformation("Successfully deleted questionary: {Id}", targetQuestionary.Id);
 
             // Reload the list
             await LoadQuestionnairesAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error deleting questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogError(ex, "Error deleting questionary: {Id}", targetQuestionary.Id);
             StatusMessage = $"Error deleting questionary: {ex.Message}";
             await _dialogService.ShowErrorAsync("Error", $"Failed to delete questionary: {ex.Message}");
         }
@@ -282,29 +284,30 @@ public partial class QuestionaryListViewModel : ObservableObject
     /// Views details of the selected questionnaire.
     /// Opens the Question Editor for managing questions.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
-    private async Task ViewDetailsAsync()
+    [RelayCommand]
+    private async Task ViewDetailsAsync(QuestionaryDto? questionary)
     {
-        if (SelectedQuestionary == null) return;
+        var targetQuestionary = questionary ?? SelectedQuestionary;
+        if (targetQuestionary == null) return;
 
         try
         {
-            _logger.LogInformation("Opening question editor for questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogInformation("Opening question editor for questionary: {Id}", targetQuestionary.Id);
 
             // Get the QuestionEditorView from DI
             var questionEditorView = _serviceProvider.GetRequiredService<QuestionEditorView>();
             
             // Initialize it with the current questionary
-            await questionEditorView.InitializeAsync(SelectedQuestionary);
+            await questionEditorView.InitializeAsync(targetQuestionary);
             
             // Navigate to the initialized editor instance
             _navigationService.NavigateToInstance(questionEditorView);
             
-            _logger.LogInformation("Navigated to question editor for questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogInformation("Navigated to question editor for questionary: {Id}", targetQuestionary.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error opening question editor: {Id}", SelectedQuestionary.Id);
+            _logger.LogError(ex, "Error opening question editor: {Id}", targetQuestionary.Id);
             await _dialogService.ShowErrorAsync("Error", $"Failed to open question editor: {ex.Message}");
         }
     }
@@ -313,46 +316,39 @@ public partial class QuestionaryListViewModel : ObservableObject
     /// Views answer responses and analysis for the selected questionnaire.
     /// Opens the Answer Analysis view.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanEditOrDelete))]
-    private async Task ViewResponsesAsync()
+    [RelayCommand]
+    private async Task ViewResponsesAsync(QuestionaryDto? questionary)
     {
-        if (SelectedQuestionary == null) return;
+        var targetQuestionary = questionary ?? SelectedQuestionary;
+        if (targetQuestionary == null) return;
 
         try
         {
-            _logger.LogInformation("Opening answer analysis for questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogInformation("Opening answer analysis for questionary: {Id}", targetQuestionary.Id);
 
             // Get the AnswerAnalysisView from DI
             var answerAnalysisView = _serviceProvider.GetRequiredService<AnswerAnalysisView>();
             
             // Initialize it with the current questionary
-            await answerAnalysisView.InitializeAsync(SelectedQuestionary);
+            await answerAnalysisView.InitializeAsync(targetQuestionary);
             
             // Navigate to the initialized view instance
             _navigationService.NavigateToInstance(answerAnalysisView);
             
-            _logger.LogInformation("Navigated to answer analysis for questionary: {Id}", SelectedQuestionary.Id);
+            _logger.LogInformation("Navigated to answer analysis for questionary: {Id}", targetQuestionary.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error opening answer analysis: {Id}", SelectedQuestionary.Id);
+            _logger.LogError(ex, "Error opening answer analysis: {Id}", targetQuestionary.Id);
             await _dialogService.ShowErrorAsync("Error", $"Failed to open answer analysis: {ex.Message}");
         }
     }
 
-    /// <summary>
-    /// Determines if edit or delete commands can execute.
-    /// </summary>
-    private bool CanEditOrDelete() => SelectedQuestionary != null;
 
-    /// <summary>
     /// Called when the selected questionary changes.
     /// </summary>
     partial void OnSelectedQuestionaryChanged(QuestionaryDto? value)
     {
-        EditQuestionaryCommand.NotifyCanExecuteChanged();
-        DeleteQuestionaryCommand.NotifyCanExecuteChanged();
-        ViewDetailsCommand.NotifyCanExecuteChanged();
-        ViewResponsesCommand.NotifyCanExecuteChanged();
+        // Commands can now execute with or without parameters
     }
 }

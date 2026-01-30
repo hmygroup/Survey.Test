@@ -151,6 +151,7 @@ public partial class App : Application
 
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<HomeViewModel>();
         services.AddTransient<QuestionaryListViewModel>();
         services.AddTransient<QuestionaryDialogViewModel>();
         services.AddTransient<QuestionEditorViewModel>();

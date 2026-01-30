@@ -28,4 +28,13 @@ public partial class QuestionaryListView : Page
             await _viewModel.ViewDetailsCommand.ExecuteAsync(null);
         }
     }
+
+    private async void CardControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        // View details on double-click
+        if (_viewModel.ViewDetailsCommand.CanExecute(null))
+        {
+            await _viewModel.ViewDetailsCommand.ExecuteAsync(null);
+        }
+    }
 }

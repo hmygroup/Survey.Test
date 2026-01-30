@@ -1,0 +1,113 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|c:\\users\\carlos.marin\\onedrive - hmy\\im\u00E1genes\\basura\\test\\survey.test\\surveyapp\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|solutionrelative:surveyapp\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|c:\\users\\carlos.marin\\onedrive - hmy\\im\u00E1genes\\basura\\test\\survey.test\\surveyapp\\views\\homeview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|solutionrelative:surveyapp\\views\\homeview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|c:\\users\\carlos.marin\\onedrive - hmy\\im\u00E1genes\\basura\\test\\survey.test\\surveyapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{02486BDD-AFC1-B407-5186-9CC7E998A0A5}|SurveyApp\\SurveyApp.csproj|solutionrelative:surveyapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 13,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:15:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:18:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:19:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:14:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:17:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:13:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:16:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:12:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HomeView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\Views\\HomeView.xaml.cs",
+              "RelativeDocumentMoniker": "SurveyApp\\Views\\HomeView.xaml.cs",
+              "ToolTip": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\Views\\HomeView.xaml.cs",
+              "RelativeToolTip": "SurveyApp\\Views\\HomeView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-29T06:44:26.437Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "SurveyApp\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\MainWindow.xaml",
+              "RelativeToolTip": "SurveyApp\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-29T06:43:21.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\App.xaml",
+              "RelativeDocumentMoniker": "SurveyApp\\App.xaml",
+              "ToolTip": "C:\\Users\\carlos.marin\\OneDrive - HMY\\Im\u00E1genes\\BASURA\\test\\Survey.Test\\SurveyApp\\App.xaml",
+              "RelativeToolTip": "SurveyApp\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-29T06:43:15.854Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

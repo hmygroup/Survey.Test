@@ -124,42 +124,162 @@
             </ui:Button>
         </StackPanel>
 
-        <!-- DataGrid -->
-        <DataGrid Grid.Row="3"
+        <!-- Questionnaire Cards -->
+        <ListBox Grid.Row="3"
                  ItemsSource="{Binding FilteredQuestionnaires}"
                  SelectedItem="{Binding SelectedQuestionary, Mode=TwoWay}"
-                 AutoGenerateColumns="False"
-                 IsReadOnly="True"
-                 CanUserAddRows="False"
-                 CanUserDeleteRows="False"
-                 CanUserResizeRows="False"
-                 SelectionMode="Single"
-                 GridLinesVisibility="Horizontal"
-                 HeadersVisibility="Column"
-                 AlternatingRowBackground="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Margin="0,0,0,16">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" 
-                                   Binding="{Binding Name}" 
-                                   Width="2*"
-                                   FontWeight="SemiBold" />
-                <DataGridTextColumn Header="Description" 
-                                   Binding="{Binding Description}" 
-                                   Width="3*" />
-                <DataGridTextColumn Header="Created By" 
-                                   Binding="{Binding CreatedBy}" 
-                                   Width="1.5*" />
-                <DataGridTextColumn Header="Created On" 
-                                   Binding="{Binding CreationDate, StringFormat='{}{0:g}'}" 
-                                   Width="1.5*" />
-            </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Cursor" Value="Hand" />
-                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <ui:CardControl Margin="0,0,16,16"
+                                   Width="350"
+                                   Cursor="Hand"
+                                   MouseDoubleClick="CardControl_MouseDoubleClick">
+                        <ui:CardControl.Style>
+                            <Style TargetType="ui:CardControl" BasedOn="{StaticResource {x:Type ui:CardControl}}">
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="0" ShadowDepth="0" Color="Transparent"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="{DynamicResource SystemAccentColor}" Opacity="0.3"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltMediumHighBrush}"/>
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect BlurRadius="6" ShadowDepth="1" Color="{DynamicResource SystemControlForegroundBaseMediumBrush}" Opacity="0.2"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="RenderTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:CardControl.Style>
+                        <Grid Margin="16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Icon and Header -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                                <ui:SymbolIcon Symbol="DocumentBulletList20" 
+                                               FontSize="24" 
+                                               Foreground="{DynamicResource SystemAccentColor}" 
+                                               Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding Name}"
+                                          FontSize="18"
+                                          FontWeight="Bold"
+                                          TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <!-- Description and Details -->
+                            <StackPanel Grid.Row="1" Margin="0,0,0,12">
+                                <TextBlock Text="{Binding Description}"
+                                          FontSize="14"
+                                          Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                          TextWrapping="Wrap"
+                                          MaxHeight="40"
+                                          TextTrimming="CharacterEllipsis"
+                                          Margin="0,0,0,8"/>
+                                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" 
+                                        CornerRadius="4" 
+                                        Padding="8,4" 
+                                        Margin="0,0,0,8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Created by"
+                                                  FontSize="12"
+                                                  Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                        <TextBlock Text="{Binding CreatedBy}"
+                                                  FontSize="12"
+                                                  FontWeight="SemiBold"
+                                                  Margin="4,0,0,0"/>
+                                        <TextBlock Text="on"
+                                                  FontSize="12"
+                                                  Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                                  Margin="8,0,0,0"/>
+                                        <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:yyyy-MM-dd}'}"
+                                                  FontSize="12"
+                                                  Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            
+                            <!-- Action Buttons -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <ui:Button Command="{Binding DataContext.ViewDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                          CommandParameter="{Binding}"
+                                          Appearance="Secondary"
+                                          Margin="0,0,8,0"
+                                          ToolTip="View Details">
+                                    <ui:Button.Icon>
+                                        <ui:SymbolIcon Symbol="Document20"/>
+                                    </ui:Button.Icon>
+                                </ui:Button>
+                                <ui:Button Command="{Binding DataContext.EditQuestionaryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                          CommandParameter="{Binding}"
+                                          Appearance="Secondary"
+                                          Margin="0,0,8,0"
+                                          ToolTip="Edit">
+                                    <ui:Button.Icon>
+                                        <ui:SymbolIcon Symbol="Edit20"/>
+                                    </ui:Button.Icon>
+                                </ui:Button>
+                                <ui:Button Command="{Binding DataContext.DeleteQuestionaryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                          CommandParameter="{Binding}"
+                                          Appearance="Danger"
+                                          ToolTip="Delete">
+                                    <ui:Button.Icon>
+                                        <ui:SymbolIcon Symbol="Delete20"/>
+                                    </ui:Button.Icon>
+                                </ui:Button>
+                            </StackPanel>
+                        </Grid>
+                    </ui:CardControl>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
-            </DataGrid.RowStyle>
-        </DataGrid>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
 
         <!-- Status Bar -->
         <Border Grid.Row="4"
